@@ -1,0 +1,159 @@
+\usepackage{fontspec}
+
+\setmainfont{PT Sans}
+\setsansfont{PT Sans}
+\setmonofont{Liberation Mono}
+
+\usepackage{fontawesome}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{lipsum}
+\usepackage{xcolor}
+\usepackage{minted}
+
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{*1.5}{*0.8}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{mDarkTeal}}
+  {\thesection}
+  {1em}
+  {}
+
+\definecolor{customcolor}{HTML}{696EA8}
+\definecolor{alert}{HTML}{CD5C5C}
+\definecolor{w3schools}{HTML}{4CAF50}
+\definecolor{subbox}{gray}{0.60}
+\definecolor{codecolor}{HTML}{FFC300}
+\definecolor{mDarkTeal}{HTML}{23373b}
+\colorlet{beamerboxbg}{black!2}
+\colorlet{beamerboxfg}{mDarkTeal}
+\definecolor{mDarkBrown}{HTML}{604c38}
+\definecolor{mLightBrown}{HTML}{EB811B}
+\definecolor{mLightGreen}{HTML}{14B03D}
+\definecolor{alertTextBox}{HTML}{A8696E}
+
+\usepackage
+[citestyle=authoryear,
+sorting=nty,
+autocite=footnote,
+autolang=hyphen,
+mincrossrefs=1,
+backend=biber]
+{biblatex}
+
+\DeclareFieldFormat{postnote}{#1}
+\DeclareFieldFormat{multipostnote}{#1}
+\DeclareAutoCiteCommand{footnote}[f]{\footcite}{\footcites}
+
+\addbibresource{literature.bib}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{most, listingsutf8, minted}
+
+\tcbset{tcbox width=auto,left=1mm,top=1mm,bottom=1mm,
+right=1mm,boxsep=1mm,middle=1pt}
+
+\newenvironment{mycolorbox}[2]{
+\begin{tcolorbox}[capture=minipage,fonttitle=\large\bfseries, enhanced jigsaw,boxsep=1mm,colback=#1!30!white,
+width=\linewidth,
+arc=2pt,outer arc=2pt, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
+breakable,
+title=#2]
+}{\end{tcolorbox}}
+
+\newenvironment{subbox}[2]{
+\begin{tcolorbox}[capture=minipage,fonttitle=\normalsize\bfseries, enhanced jigsaw,boxsep=1mm,colback=#1!30!white,on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
+breakable,
+title=#2]\footnotesize 
+}{\normalsize\end{tcolorbox}\vspace{0.1em}}
+
+\newenvironment{multibox}[1]{
+\begin{tcbraster}[raster columns=#1,raster equal height,nobeforeafter,raster column skip=1em,raster left skip=1em,raster right skip=1em]}{\end{tcbraster}}
+
+\newenvironment{textbox}[1]{\begin{mycolorbox}{customcolor}{#1}}{\end{mycolorbox}}
+\newenvironment{alerttextbox}[1]{\begin{mycolorbox}{alertTextBox}{#1}}{\end{mycolorbox}}
+
+\newtcblisting{codebox}[3][]{
+colback=black!10,colframe=black!20,
+listing only,
+minted options={numbers=left,
+    style=default,
+    fontsize=\scriptsize,breaklines,
+    breaksymbolleft=,autogobble,linenos,numbersep=0.7em,
+    #1
+    },
+enhanced,top=1mm, toptitle=0mm,
+left=5mm,
+arc=0pt,outer arc=0pt,
+title={#3},
+fonttitle=\small\bfseries\color{mDarkTeal},
+listing engine=minted,minted language=#2,
+breakable
+}
+
+\newcommand{\punkti}{~\lbrack\dots\rbrack~}
+
+\renewenvironment{quote}
+               {\list{\faQuoteLeft\phantom{ }}{\rightmargin\leftmargin}
+                \item\relax\scriptsize\ignorespaces}
+               {\unskip\unskip\phantom{xx}\faQuoteRight\endlist}
+
+\newcommand{\bgupper}[3]{\colorbox{#1}{\color{#2}\huge\bfseries\MakeUppercase{#3}}}
+\newcommand{\bg}[3]{\colorbox{#1}{\bfseries\color{#2}#3}}
+
+\newcommand{\mycommand}[2]{
+  {\par\noindent\ttfamily\detokenize{#1}\par}
+  \nopagebreak
+  \hangindent=1.5em \hangafter=1 \noindent
+  \small\textit{#2}\par\vspace{0.5ex}
+}
+
+\newcommand{\resourcelink}[3]{
+  {\par\noindent\href{#1}{\ttfamily #2}\par}
+  \nopagebreak
+  \hangindent=1.5em \hangafter=1 \noindent
+  \small\textit{#3}\par\vspace{0.5ex}
+}
+
+\newcommand{\sep}{{\scriptsize~\faCircle{ }~}}
+\newcommand{\bggreen}[1]{\medskip\bgupper{w3schools}{black}{#1}\\[0.5em]}
+\newcommand{\green}[1]{\smallskip\bg{w3schools}{white}{#1}\\}
+\newcommand{\red}[1]{\smallskip\bg{alert}{white}{#1}\\}
+\newcommand{\alert}[1]{\red{#1}\\}
+
+\usepackage{multicol}
+\setlength{\columnsep}{15pt}
+
+\setlength{\parindent}{0pt}
+\usepackage{csquotes}
+\newcommand{\loremipsum}{Lorem ipsum dolor sit amet.}
+
+\newenvironment{myexampleblock}[1]{
+    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightGreen}, enhanced jigsaw,boxsep=1mm,colback=black!10,breakable,noparskip,
+    on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
+    colframe=black!20,arc=0pt,outer arc=0pt,
+    opacityback=0.7,nobeforeafter,title=#1]}
+    {\endtcolorbox}
+
+\newenvironment{myalertblock}[1]{
+    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightBrown}, enhanced jigsaw,boxsep=1mm,colback=black!10,breakable,noparskip,
+    on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
+    colframe=black!20,arc=0pt,outer arc=0pt,
+    opacityback=0.7,nobeforeafter,title=#1]}
+    {\endtcolorbox}
+
+\newenvironment{myblock}[1]{
+    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mDarkTeal}, enhanced jigsaw,boxsep=1mm,colback=black!10,breakable,noparskip,
+    on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
+    colframe=black!20, arc=0pt,outer arc=0pt,
+    opacityback=0.7,nobeforeafter,title=#1]}
+    {\endtcolorbox}
+
+\newcommand{\mygraphics}[2][]{
+\tcbox[enhanced,boxsep=0pt,top=0pt,bottom=0pt,left=0pt,
+right=0pt,boxrule=0.4pt,drop fuzzy shadow,clip upper,
+colback=black!75!white,toptitle=2pt,bottomtitle=2pt,nobeforeafter,
+center title,fonttitle=\small\sffamily,title=\detokenize{#2}]
+{\includegraphics[width=\the\dimexpr(\linewidth-4mm)\relax]{#2}}
+}

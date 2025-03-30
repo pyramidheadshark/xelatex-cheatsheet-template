@@ -1,0 +1,322 @@
+\section{Введение / Introduction}
+
+\begin{textbox}{Что такое Pandas? / What is Pandas?}
+\red{Pandas} — библиотека Python для \textbf{обработки и анализа данных}. Предоставляет гибкие и мощные структуры данных (Series, DataFrame), разработанные для работы с "реляционными" или "табличными" данными.\footcite[Гл. 5]{mckinney2017python}
+
+\bigskip
+\green{Ключевые возможности / Key Features:}
+\begin{itemize}
+    \item Эффективные структуры данных: \textbf{Series} (1D) и \textbf{DataFrame} (2D).
+    \item Инструменты для чтения/записи данных: CSV, Excel, SQL, JSON и др.
+    \item Гибкая \textbf{индексация} и \textbf{выборка} данных.
+    \item Обработка \textbf{пропущенных данных}.
+    \item Мощные операции \textbf{группировки} (\texttt{groupby}).
+    \item Слияние (\texttt{merge}) и соединение (\texttt{join}) наборов данных.
+    \item Работа с \textbf{временными рядами}.
+\end{itemize}
+\end{textbox}
+
+\section{Основные Структуры / Core Structures}
+
+\begin{textbox}{Series (1D) и DataFrame (2D)}
+\textbf{Series}: Одномерный массив с метками (индексом). Похож на столбец таблицы или словарь. \sep \textbf{DataFrame}: Двумерная структура данных с метками (индекс строк и названия столбцов). Похожа на таблицу SQL или электронную таблицу Excel.
+
+\begin{codebox}{python}{Создание Series и DataFrame}
+import pandas as pd
+import numpy as np
+
+# Series (индекс по умолчанию)
+s = pd.Series([1, 3, 5, np.nan, 6, 8])
+print("Series:\n", s)
+
+# DataFrame из словаря
+data = {'col_A': [1, 2, 3], 'col_B': ['X', 'Y', 'Z']}
+dates = pd.date_range('20240101', periods=3)
+df = pd.DataFrame(data, index=dates)
+print("\nDataFrame:\n", df)
+\end{codebox}
+\end{textbox}
+
+\section{Загрузка и Сохранение / IO}
+\begin{myblock}{Чтение и запись данных}
+Pandas поддерживает множество форматов.
+\mycommand{pd.read_csv('file.csv')}{Чтение CSV}
+\mycommand{df.to_csv('output.csv')}{Запись в CSV}
+\mycommand{pd.read_excel('file.xlsx')}{Чтение Excel}
+\mycommand{df.to_excel('output.xlsx')}{Запись в Excel}
+\mycommand{pd.read_sql(query, conn)}{Чтение из SQL}
+\mycommand{pd.read_json('file.json')}{Чтение JSON}
+\end{myblock}
+
+\section{Базовый Осмотр / Basic Inspection}
+\begin{textbox}{Первичный анализ DataFrame}
+\begin{codebox}{python}{Команды для осмотра `df`}
+df.head()       # Первые 5 строк
+df.head(3)      # Первые N строк
+df.tail()       # Последние 5 строк
+df.info()       # Сводка: индекс, столбцы, типы, память
+df.describe()   # Статистическая сводка (числовые столбцы)
+df.shape        # Размеры (строки, столбцы) - кортеж
+df.columns      # Названия столбцов
+df.index        # Индекс строк
+df.dtypes       # Типы данных в столбцах
+\end{codebox}
+\end{textbox}
+
+\section{Выборка и Фильтрация / Selection \& Filtering}
+\begin{textbox}{Доступ к данным}
+\red{Основные способы:} \texttt{[]} \sep \texttt{.loc[]} \sep \texttt{.iloc[]}
+
+\begin{codebox}{python}{Выбор столбцов и строк}
+# Выбор одного столбца (вернет Series)
+df['col_A']
+df.col_A # Альтернатива (если имя валидно)
+
+# Выбор нескольких столбцов (вернет DataFrame)
+df[['col_A', 'col_B']]
+
+# --- .loc: по МЕТКАМ индекса/столбцов ---
+df.loc[dates[0]]              # Строка по метке индекса
+df.loc['20240101':'20240102'] # Срез строк по меткам
+df.loc[:, ['col_A']]          # Все строки, столбец 'col_A'
+df.loc[dates[0], 'col_A']     # Конкретное значение
+
+# --- .iloc: по ЦЕЛОЧИСЛЕННЫМ позициям ---
+df.iloc[0]          # Первая строка (позиция 0)
+df.iloc[0:2]        # Первые две строки (срез до 2)
+df.iloc[:, 0]       # Все строки, первый столбец
+df.iloc[0, 0]       # Значение в [0, 0]
+df.iloc[[0, 2], [0, 1]] # Выбор конкретных строк/столбцов
+\end{codebox}
+\end{textbox}
+
+\begin{myexampleblock}{Фильтрация по условию (Boolean Indexing)}
+Создается булева Series (True/False), которая используется для фильтрации строк.
+
+\begin{codebox}{python}{Примеры фильтрации}
+# Строки, где col_A > 1
+df[df['col_A'] > 1]
+df[df.col_A > 1] # Эквивалентно
+
+# Несколько условий: & (И), | (ИЛИ), ~ (НЕ)
+# ВАЖНО: используйте скобки из-за приоритета операций!
+df[(df['col_A'] > 1) & (df['col_B'] == 'Y')]
+
+# Фильтрация с .loc (предпочтительнее для явности)
+df.loc[df['col_A'] > 1]
+df.loc[df['col_A'] > 1, ['col_B']] # Фильтр + выбор столбца
+
+# Использование .isin()
+df[df['col_B'].isin(['X', 'Z'])]
+
+# Проверка на NaN (пропуски)
+df[df['col_A'].isnull()]    # Где col_A пропущена
+df[df['col_A'].notnull()]   # Где col_A НЕ пропущена
+
+# Фильтрация строк с помощью .str
+# df[df['col_B'].str.startswith('X')] # Если бы был текст
+# df[df['col_B'].str.contains('Y')]
+\end{codebox}
+\end{myexampleblock}
+
+\section{Сортировка / Sorting}
+\begin{textbox}{Сортировка данных}
+\green{По значениям} (`sort\_values`) и \green{по индексу} (`sort\_index`).
+
+\begin{codebox}{python}{Примеры сортировки}
+# Сортировка по одному столбцу (по возрастанию)
+df.sort_values(by='col_A')
+
+# Сортировка по одному столбцу (по убыванию)
+df.sort_values(by='col_B', ascending=False)
+
+# Сортировка по нескольким столбцам
+# df.sort_values(by=['col_A', 'col_B']) # Если есть еще столбец
+
+# Сортировка по индексу (по убыванию)
+df.sort_index(ascending=False)
+
+# Важно: сортировка возвращает НОВЫЙ DataFrame
+# Чтобы изменить исходный: df.sort_values(..., inplace=True)
+\end{codebox}
+\end{textbox}
+
+\section{Агрегация и Группировка / Aggregation \& Grouping}
+\begin{myblock}{Split-Apply-Combine (Разделяй-Применяй-Объединяй)}
+Основа `groupby`:
+1.  \textbf{Split}: Данные делятся на группы по ключу.
+2.  \textbf{Apply}: Функция применяется к каждой группе независимо.
+3.  \textbf{Combine}: Результаты объединяются в итоговую структуру.
+\end{myblock}
+
+\begin{textbox}{Группировка и агрегация}
+\begin{codebox}{python}{Примеры GroupBy}
+# Создадим DataFrame для примера
+df_group = pd.DataFrame({
+    'key': ['A', 'B', 'C', 'A', 'B', 'C'],
+    'data1': np.random.randn(6),
+    'data2': np.random.randn(6)
+})
+
+# Группируем по 'key' и считаем среднее для каждой группы
+grouped = df_group.groupby('key')
+grouped.mean()
+# Эквивалентно: df_group.groupby('key').mean()
+
+# Вычисление нескольких агрегатов
+grouped.agg(['mean', 'std', 'count'])
+
+# Применение разных функций к разным столбцам
+grouped.agg({'data1': 'sum', 'data2': 'max'})
+
+# Размер групп
+grouped.size()
+
+# Итерация по группам (редко нужна)
+# for name, group in grouped:
+#     print(name)
+#     print(group)
+\end{codebox}
+\end{textbox}
+
+\begin{alerttextbox}{Сводные таблицы / Pivot Tables}
+Удобный способ агрегации и переформатирования данных.
+
+\begin{codebox}{python}{Пример pivot\_table}
+# --- ИСПРАВЛЕНИЕ: Экранируем _ в имени функции внутри текста ---
+# (В коде minted сам разберется)
+# Предположим, есть df с 'Category', 'Value', 'Date'
+# df_pivot = pd.DataFrame({
+#    'Date': pd.to_datetime(['2024-01-01', '2024-01-01', '2024-01-02', '2024-01-02']),
+#    'Category': ['A', 'B', 'A', 'B'],
+#    'Value': [10, 20, 30, 40] })
+#
+# pd.pivot_table(df_pivot, values='Value',
+#                index=['Date'], columns=['Category'],
+#                aggfunc=np.sum) # Сумма Value по датам и категориям
+\end{codebox}
+\alert{Часто результатом groupby или pivot\_table является MultiIndex!}
+\end{alerttextbox}
+
+\section{Применение Функций / Applying Functions}
+\begin{textbox}{Применение пользовательских функций}
+\green{apply()} (по строкам/столбцам DF), \green{map()} (поэлементно для Series), \green{applymap()} (поэлементно для DF).
+
+\begin{codebox}{python}{Примеры apply, map, applymap}
+# --- apply: применяет функцию вдоль оси DataFrame ---
+# Применить к каждому столбцу (axis=0, по умолчанию)
+df.apply(np.sum)
+
+# Применить к каждой строке (axis=1)
+# df.apply(lambda row: row['col_A'] + row['col_B'], axis=1) # Пример
+
+# --- map: работает поэлементно на Series ---
+# Замена значений в Series
+s_map = pd.Series(['cat', 'dog', np.nan, 'cat'])
+s_map.map({'cat': 'kitten', 'dog': 'puppy'})
+s_map.map('I am a {}'.format) # Применение строковой функции
+
+# --- applymap: работает поэлементно на DataFrame ---
+# Применяет функцию к каждому элементу DF
+df_numeric = pd.DataFrame(np.random.randn(3, 3))
+df_numeric.applymap(lambda x: f"{x:.2f}") # Форматирование
+
+# Часто используются lambda-функции для краткости
+df.apply(lambda x: x.max() - x.min()) # Разница макс/мин по столбцам
+\end{codebox}
+\end{textbox}
+
+\section{Работа с Датами / Working with Dates}
+\begin{textbox}{Временные ряды / Time Series}
+Pandas имеет мощные инструменты для работы с датами и временем.
+
+\begin{codebox}{python}{Основы работы с датами}
+# Преобразование столбца в datetime объекты
+# df['date_col'] = pd.to_datetime(df['date_string_col'])
+
+# Генерация последовательности дат
+date_idx = pd.date_range('2024-03-01', periods=5, freq='D') # D=дни, H=часы...
+print("Date Range:\n", date_idx)
+
+# Доступ к компонентам даты (год, месяц, день...)
+# Требует, чтобы столбец был типа datetime
+# df['year'] = df['date_col'].dt.year
+# df['month'] = df['date_col'].dt.month_name()
+# df['weekday'] = df['date_col'].dt.day_name()
+
+# Фильтрация по датам (если индекс - DatetimeIndex)
+# df['2024-01'] # Все данные за январь 2024
+# df[datetime(2024,1,1):datetime(2024,1,5)] # Срез по датам
+\end{codebox}
+\end{textbox}
+
+\section{Объединение / Merging \& Joining}
+\begin{textbox}{Объединение DataFrames}
+\red{merge()} (как SQL JOIN), \red{join()} (по индексам), \red{concat()} (склеивание).
+
+\begin{codebox}{python}{Примеры объединения}
+df1 = pd.DataFrame({'key': ['A', 'B'], 'value1': [1, 2]})
+df2 = pd.DataFrame({'key': ['A', 'C'], 'value2': [3, 4]})
+
+# merge (по умолчанию inner join по общим столбцам - 'key')
+pd.merge(df1, df2, on='key') # Только строки с key='A'
+pd.merge(df1, df2, on='key', how='outer') # Все ключи
+pd.merge(df1, df2, on='key', how='left') # Все из df1
+
+# concat (склеивание по оси)
+pd.concat([df1, df2]) # Склеить строки (ось 0)
+# pd.concat([df1, df2], axis=1) # Склеить столбцы (ось 1)
+
+# join (обычно по индексам)
+# df1.set_index('key').join(df2.set_index('key'), how='outer')
+\end{codebox}
+\end{textbox}
+
+\section{Визуализация / Visualization}
+\begin{textbox}{Быстрая визуализация}
+Pandas интегрируется с Matplotlib для простого построения графиков.
+
+\begin{codebox}{python}{Пример простого графика}
+# Требуется matplotlib: pip install matplotlib
+import matplotlib.pyplot as plt
+
+# Гистограмма для Series
+s = pd.Series(np.random.randn(1000))
+s.hist(bins=30)
+plt.title("Гистограмма / Histogram")
+# plt.show() # Отобразить график (если не в Jupyter/IPython)
+# --- Убедитесь, что папка img существует ---
+plt.savefig('img/pandas_plot_example.png')
+plt.close() # Закрываем график
+
+# Линейный график для DataFrame
+df_plot = pd.DataFrame(np.random.randn(10, 3), columns=['A', 'B', 'C'])
+# df_plot.plot()
+# plt.title("Линейный график / Line Plot")
+# plt.show()
+\end{codebox}
+
+\mygraphics{img/pandas_plot_example.png}
+\end{textbox}
+
+\section{Полезные ссылки и советы / Links \& Tips}
+\begin{myblock}{Полезные ресурсы}
+\resourcelink{https://pandas.pydata.org/docs/}{Pandas Documentation}
+ {Официальная документация \footcite{pandas_documentation}}
+\resourcelink{https://stackoverflow.com/questions/tagged/pandas}{Stack Overflow [pandas]}
+ {Вопросы и ответы}
+\resourcelink{https://github.com/pandas-dev/pandas}{Pandas GitHub}
+ {Исходный код}
+\end{myblock}
+
+\begin{textbox}{Цитата / Quote}
+\begin{quote}
+"Плоские данные лучше вложенных данных." \\
+\emph{-- Дзен Python (импортируйте это)}
+\emph{-- The Zen of Python (import this)}
+\end{quote}
+\end{textbox}
+
+\begin{alerttextbox}{Совет по производительности / Performance Tip}
+Векторизованные операции Pandas (использующие NumPy под капотом) обычно \textbf{намного быстрее}, чем итерация по строкам с помощью \texttt{.iterrows()} или циклов \texttt{for}. Избегайте итераций, если это возможно! Используйте \texttt{apply}, \texttt{map} или встроенные функции Pandas/NumPy.
+\end{alerttextbox}

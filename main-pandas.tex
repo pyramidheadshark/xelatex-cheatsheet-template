@@ -1,39 +1,56 @@
 \documentclass[10pt,a4paper]{article}
 
 \usepackage[landscape,margin=0.7cm]{geometry}
-\usepackage[russian,english]{babel}
+\usepackage[russian,english]{babel} % Поддержка русского и английского
 
+% >>> КОММЕНТАРИЙ: Определяем переменные для заголовка и автора
 \newcommand{\cheatsheettitle}{\color{w3schools}Шпаргалка по Pandas / {\color{alert} Pandas} {\color{black} Cheatsheet (XeLaTeX)}}
 \newcommand{\cheatsheetauthor}{Создано с использованием LaTeX шаблона}
 
+% >>> КОММЕНТАРИЙ: Подключаем основной файл шаблона с настройками стилей и пакетов
 \input{cheatsheet-template.tex}
-\begin{document}
-\pagestyle{empty}
-\small
 
+\begin{document}
+\pagestyle{empty} % Убираем номера страниц
+\small % Уменьшаем базовый размер шрифта для всего документа
+
+% >>> КОММЕНТАРИЙ: Используем multicols для создания трех колонок.
+% \raggedcolumns гарантирует, что колонки не будут искусственно растягиваться по вертикали,
+% что лучше для шпаргалок, но может приводить к разной высоте колонок.
+% Идеальная автоматическая балансировка сложных блоков (tcolorbox) в multicol затруднена.
+% Для лучшего результата может потребоваться ручная доводка:
+%  - Разбиение больших блоков контента.
+%  - Использование \needspace{<длина>} перед блоками или секциями.
+%  - В крайних случаях - \columnbreak для принудительного разрыва колонки.
 \begin{multicols}{3}
 \raggedcolumns
 
 \noindent
 \begin{minipage}{\linewidth}
     \centering
-    {\setmainfont{PT Sans Bold}\huge \cheatsheettitle \par}
+    % >>> КОММЕНТАРИЙ: Используем стандартный \bfseries для жирности заголовка.
+    % Убрано избыточное \setmainfont{PT Sans Bold}, которое вызывало предупреждение в логе.
+    % Основной шрифт (PT Sans) уже задан в шаблоне и должен содержать жирное начертание.
+    {\bfseries\huge \cheatsheettitle \par}
     \vspace{1ex}
     {\large \cheatsheetauthor \par}
     \vspace{0.5ex}
-    {\normalsize \today \par}
+    {\normalsize \today \par} % Вставляем текущую дату
 \end{minipage}
 \vspace{2ex}
 
-\thispagestyle{empty}
+\thispagestyle{empty} % Убеждаемся, что и на первой странице нет номера
 
-\scriptsize
-\tableofcontents
+\scriptsize % Уменьшаем шрифт для оглавления и основного текста
+\tableofcontents % Генерируем оглавление
 
+% >>> КОММЕНТАРИЙ: Подключаем основной контент шпаргалки
 \input{contents/cheatsheet-pandas.tex}
 
-\AtNextBibliography{\footnotesize}
+% >>> КОММЕНТАРИЙ: Печатаем библиографию в конце документа
+\AtNextBibliography{\footnotesize} % Уменьшаем шрифт для библиографии
 \printbibliography
+
 \end{multicols}
 
 \end{document}

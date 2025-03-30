@@ -1,0 +1,39 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[landscape,margin=0.7cm]{geometry}
+\usepackage[russian,english]{babel}
+
+\newcommand{\cheatsheettitle}{\color{w3schools}Шпаргалка по Pandas / {\color{alert} Pandas} {\color{black} Cheatsheet (XeLaTeX)}}
+\newcommand{\cheatsheetauthor}{Создано с использованием LaTeX шаблона}
+
+\input{cheatsheet-template.tex}
+\begin{document}
+\pagestyle{empty}
+\small
+
+\begin{multicols}{3}
+\raggedcolumns
+
+\noindent
+\begin{minipage}{\linewidth}
+    \centering
+    {\setmainfont{PT Sans Bold}\huge \cheatsheettitle \par}
+    \vspace{1ex}
+    {\large \cheatsheetauthor \par}
+    \vspace{0.5ex}
+    {\normalsize \today \par}
+\end{minipage}
+\vspace{2ex}
+
+\thispagestyle{empty}
+
+\scriptsize
+\tableofcontents
+
+\input{contents/cheatsheet-pandas.tex}
+
+\AtNextBibliography{\footnotesize}
+\printbibliography
+\end{multicols}
+
+\end{document}

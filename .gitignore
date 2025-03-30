@@ -326,7 +326,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -535,3 +534,7 @@ $RECYCLE.BIN/
 
 # Default temp files directory placeholder
 !_minted/.gitkeep
+
+# Build directory
+build/*
+!build/.gitkeep

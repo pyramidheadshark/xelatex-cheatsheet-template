@@ -1,3 +1,4 @@
+% \documentclass{article} % ЗАКОММЕНТИРОВАНО: Добавлено для возможности компиляции этого фрагмента отдельно для проверки
 \usepackage{fontspec}
 
 % >>> КОММЕНТАРИЙ: Установка основных шрифтов документа (требует установленных шрифтов в системе)
@@ -11,6 +12,11 @@
 \usepackage{lipsum} % Для генерации текста-рыбы (не используется в финальной версии)
 \usepackage{xcolor} % Для определения и использования цветов
 \usepackage{minted} % Для подсветки синтаксиса кода (требует Python и Pygments, компиляция с -shell-escape)
+
+% >>>>>> НОВОЕ: Пакет для создания графиков <<<<<<
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest} % Устанавливаем последнюю версию совместимости
+\usetikzlibrary{arrows.meta, shapes.geometric} % Загружаем полезные библиотеки TikZ
 
 \usepackage{titlesec} % Для настройки заголовков секций
 % >>> КОММЕНТАРИЙ: Настройка отступов для заголовков секций (\section)
@@ -69,7 +75,7 @@ right=1mm,boxsep=1mm,middle=1pt}
 % Если блок разрывается некрасиво, попробуйте разбить контент на несколько блоков
 % или используйте \needspace{<длина>} перед блоком.
 \newenvironment{mycolorbox}[2]{
-\begin{tcolorbox}[capture=minipage,fonttitle=\large\bfseries, enhanced jigsaw,boxsep=1mm,colback=#1!30!white,
+\begin{tcolorbox}[capture=minipage,fonttitle=\large\bfseries, enhanced,boxsep=1mm,colback=#1!30!white,
 width=\linewidth, % Ширина блока равна ширине текущей колонки
 arc=2pt,outer arc=2pt, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
 breakable, % Разрешить разрыв блока
@@ -78,7 +84,7 @@ title=#2] % Текст заголовка блока
 
 % >>> КОММЕНТАРИЙ: Окружение subbox (не используется в текущем коде)
 \newenvironment{subbox}[2]{
-\begin{tcolorbox}[capture=minipage,fonttitle=\normalsize\bfseries, enhanced jigsaw,boxsep=1mm,colback=#1!30!white,on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
+\begin{tcolorbox}[capture=minipage,fonttitle=\normalsize\bfseries, enhanced,boxsep=1mm,colback=#1!30!white,on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
 breakable,
 title=#2]\footnotesize
 }{\normalsize\end{tcolorbox}\vspace{0.1em}}
@@ -154,7 +160,7 @@ breakable % Разрешить разрыв блока кода
 \newcommand{\bggreen}[1]{\medskip\bgupper{w3schools}{black}{#1}\\[0.5em]} % Зеленый заголовок (не используется)
 \newcommand{\green}[1]{\smallskip\bg{w3schools}{white}{#1}\\} % Текст на зеленом фоне
 \newcommand{\red}[1]{\smallskip\bg{alert}{white}{#1}\\} % Текст на красном фоне
-\newcommand{\alert}[1]{\red{#1}\\} % Псевдоним для red
+\newcommand{\alertcmd}[1]{\red{#1}\\} % Псевдоним для red (переименовано чтобы не конфликтовать с цветом alert)
 
 \usepackage{multicol} % Пакет для создания нескольких колонок
 \setlength{\columnsep}{15pt} % Расстояние между колонками
@@ -172,21 +178,21 @@ breakable % Разрешить разрыв блока кода
 % немного не до конца заполненными. Можно игнорировать или попробовать перефразировать/
 % использовать \sloppy перед проблемным абзацем.
 \newenvironment{myexampleblock}[1]{ % Блок для примеров (зеленый заголовок)
-    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightGreen}, enhanced jigsaw,boxsep=1mm,colback=black!10,breakable,noparskip,
+    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightGreen}, enhanced,boxsep=1mm,colback=black!10,breakable,noparskip,
     on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
     colframe=black!20,arc=0pt,outer arc=0pt,
     opacityback=0.7,nobeforeafter,title=#1]}
     {\endtcolorbox}
 
 \newenvironment{myalertblock}[1]{ % Блок для предупреждений (оранжевый заголовок)
-    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightBrown}, enhanced jigsaw,boxsep=1mm,colback=black!10,breakable,noparskip,
+    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightBrown}, enhanced,boxsep=1mm,colback=black!10,breakable,noparskip,
     on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
     colframe=black!20,arc=0pt,outer arc=0pt,
     opacityback=0.7,nobeforeafter,title=#1]}
     {\endtcolorbox}
 
 \newenvironment{myblock}[1]{ % Обычный информационный блок (бирюзовый заголовок)
-    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mDarkTeal}, enhanced jigsaw,boxsep=1mm,colback=black!10,breakable,noparskip,
+    \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mDarkTeal}, enhanced,boxsep=1mm,colback=black!10,breakable,noparskip,
     on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
     colframe=black!20, arc=0pt,outer arc=0pt,
     opacityback=0.7,nobeforeafter,title=#1]}
@@ -209,3 +215,114 @@ center title,fonttitle=\small\sffamily,title=\detokenize{#2}] % Использу
 % LaTeX начнет новую колонку/страницу перед выполнением команды.
 % Пример: \needspace{10\baselineskip} % Запросить место для примерно 10 строк текста
 % Это полезно для предотвращения "висячих" заголовков или некрасивых разрывов блоков.
+
+% >>>>>> НОВОЕ: Стили для графиков PGFPlots <<<<<<
+\pgfplotsset{
+    % Базовый стиль для всех графиков в шпаргалке
+    cheatsheet plot style/.style={
+        width=0.98\linewidth, % Ширина чуть меньше колонки для аккуратности
+        height=5cm,          % Высота графика (можно изменить по необходимости)
+        grid=major,          % Включаем основную сетку
+        grid style={dashed, color=black!20}, % Стиль сетки: пунктирная, светло-серая
+        axis lines=left,     % Линии осей только слева и снизу
+        axis line style={color=black!60, thick}, % Стиль линий осей: серые, потолще
+        tick style={color=black!60, thick}, % Стиль меток на осях
+        ticklabel style={font=\scriptsize, color=black}, % Стиль подписей меток: маленький шрифт
+        label style={font=\small, color=mDarkTeal}, % Стиль подписей осей: шрифт small, цвет как у заголовков блоков
+        title style={font=\small\bfseries, color=mDarkTeal}, % Стиль заголовка графика
+        legend style={        % Стиль легенды
+            font=\scriptsize, % Маленький шрифт
+            draw=black!30,    % Легкая рамка вокруг легенды
+            fill=white,       % Белый фон
+            legend cell align=left, % Выравнивание текста в ячейке легенды
+            anchor=north east, % Якорь для позиционирования
+            at={(rel axis cs:0.98,0.98)} % Положение в правом верхнем углу внутри области графика
+        },
+        cycle list={ % Список стилей для линий \addplot (цвета взяты из шаблона)
+            {blue, mark=*, thick},
+            {alert, mark=square, thick},
+            {w3schools, mark=triangle, thick},
+            {mLightBrown, mark=diamond, thick},
+            {customcolor, mark=oplus, thick},
+            {black!50, mark=pentagon, thick},
+        },
+        % Убираем рамку вокруг графика по умолчанию
+        axis background/.style={fill=none},
+    },
+    % Дополнительный стиль для ROC-кривой (без сетки, с диагональю)
+    roc curve style/.style={
+        cheatsheet plot style, % Наследуем базовый стиль
+        width=6cm, height=6cm, % Делаем квадратным
+        grid=none, % Убираем сетку
+        xlabel={False Positive Rate (FPR)},
+        ylabel={True Positive Rate (TPR)},
+        xmin=0, xmax=1,
+        ymin=0, ymax=1,
+        xtick={0, 0.5, 1},
+        ytick={0, 0.5, 1},
+        legend pos=south east, % Легенда внизу справа
+        % Добавляем диагональную линию случайного угадывания
+        extra x ticks={0.5}, extra y ticks={0.5},
+        extra tick style={grid=major, grid style={dashed, color=black!40}},
+        after end axis/.code={ % Добавляем линию после отрисовки осей
+            \draw[dashed, color=black!40] (axis cs:0,0) -- (axis cs:1,1);
+        }
+    },
+    % Дополнительный стиль для PR-кривой
+    pr curve style/.style={
+        cheatsheet plot style, % Наследуем базовый стиль
+        xlabel={Recall (TPR)},
+        ylabel={Precision},
+        xmin=0, xmax=1,
+        ymin=0, ymax=1,
+        legend pos=south west, % Легенда внизу слева
+    }
+}
+
+% % Добавлено для возможности компиляции этого фрагмента отдельно для проверки
+% \begin{document}
+% \begin{multicols}{2} % Пример использования в multicols
+% \lipsum[1] % Просто текст для заполнения
+
+% \begin{textbox}{Пример графика (Базовый стиль)}
+%     \begin{center}
+%     \begin{tikzpicture}
+%         \begin{axis}[cheatsheet plot style, title={Пример $y=x^2$ и $y=x+1$}]
+%         \addplot coordinates {(0, 0) (1, 1) (2, 4) (3, 9) (4, 16)};
+%         \addlegendentry{$y=x^2$}
+%         \addplot coordinates {(0, 1) (1, 2) (2, 3) (3, 4) (4, 5)};
+%         \addlegendentry{$y=x+1$}
+%         \end{axis}
+%     \end{tikzpicture}
+%     \end{center}
+% \end{textbox}
+
+% \begin{myexampleblock}{Пример ROC-кривой}
+%     \begin{center}
+%     \begin{tikzpicture}
+%         \begin{axis}[roc curve style, title={Пример ROC Curve}]
+%         % Пример данных ROC кривой
+%         \addplot coordinates { (0,0) (0.1,0.3) (0.2,0.6) (0.4,0.8) (0.6,0.9) (0.8,0.95) (1,1) };
+%         \addlegendentry{Модель A (AUC $\approx$ 0.8)}
+%         \addplot coordinates { (0,0) (0.2,0.2) (0.4,0.4) (0.6,0.6) (0.8,0.8) (1,1) }; % Пример хуже
+%         \addlegendentry{Модель B (AUC = 0.5)}
+%         \end{axis}
+%     \end{tikzpicture}
+%     \end{center}
+% \end{myexampleblock}
+
+% \begin{myblock}{Пример PR-кривой}
+%     \begin{center}
+%     \begin{tikzpicture}
+%         \begin{axis}[pr curve style, title={Пример Precision-Recall Curve}]
+%         % Пример данных PR кривой (могут сильно зависеть от порога)
+%         \addplot coordinates { (0,0.9) (0.1,0.85) (0.3,0.8) (0.5,0.7) (0.7,0.6) (0.9,0.4) (1,0.3) };
+%         \addlegendentry{Модель C}
+%         \end{axis}
+%     \end{tikzpicture}
+%     \end{center}
+% \end{myblock}
+
+% \lipsum[2-3] % Просто текст для заполнения
+% \end{multicols}
+% \end{document}

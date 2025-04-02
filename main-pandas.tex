@@ -3,9 +3,9 @@
 \usepackage[landscape,margin=0.7cm]{geometry}
 \usepackage[russian,english]{babel} % Поддержка русского и английского
 
-% >>> КОММЕНТАРИЙ: Определяем переменные для заголовка и автора
+% >>> КОММЕНТАРИЙ: Определяем переменные для заголовка и автора (можно изменить)
 \newcommand{\cheatsheettitle}{\color{w3schools}Шпаргалка по Pandas / {\color{alert} Pandas} {\color{black} Cheatsheet (XeLaTeX)}}
-\newcommand{\cheatsheetauthor}{Создано с использованием LaTeX шаблона}
+\newcommand{\cheatsheetauthor}{Краткий справочник по основным операциям}
 
 % >>> КОММЕНТАРИЙ: Подключаем основной файл шаблона с настройками стилей и пакетов
 \input{cheatsheet-template.tex}
@@ -15,22 +15,12 @@
 \small % Уменьшаем базовый размер шрифта для всего документа
 
 % >>> КОММЕНТАРИЙ: Используем multicols для создания трех колонок.
-% \raggedcolumns гарантирует, что колонки не будут искусственно растягиваться по вертикали,
-% что лучше для шпаргалок, но может приводить к разной высоте колонок.
-% Идеальная автоматическая балансировка сложных блоков (tcolorbox) в multicol затруднена.
-% Для лучшего результата может потребоваться ручная доводка:
-%  - Разбиение больших блоков контента.
-%  - Использование \needspace{<длина>} перед блоками или секциями.
-%  - В крайних случаях - \columnbreak для принудительного разрыва колонки.
 \begin{multicols}{3}
-\raggedcolumns
+\raggedcolumns % Не растягивать колонки по вертикали
 
 \noindent
 \begin{minipage}{\linewidth}
     \centering
-    % >>> КОММЕНТАРИЙ: Используем стандартный \bfseries для жирности заголовка.
-    % Убрано избыточное \setmainfont{PT Sans Bold}, которое вызывало предупреждение в логе.
-    % Основной шрифт (PT Sans) уже задан в шаблоне и должен содержать жирное начертание.
     {\bfseries\huge \cheatsheettitle \par}
     \vspace{1ex}
     {\large \cheatsheetauthor \par}
@@ -47,9 +37,9 @@
 % >>> КОММЕНТАРИЙ: Подключаем основной контент шпаргалки
 \input{contents/cheatsheet-pandas.tex}
 
-% >>> КОММЕНТАРИЙ: Печатаем библиографию в конце документа
+% >>> КОММЕНТАРИЙ: Печатаем библиографию (если используется \cite)
 \AtNextBibliography{\footnotesize} % Уменьшаем шрифт для библиографии
-\printbibliography
+%\printbibliography % Раскомментируйте, если добавляли цитаты через \cite или \footcite
 
 \end{multicols}
 

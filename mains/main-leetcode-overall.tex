@@ -1,0 +1,46 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[landscape,margin=0.7cm]{geometry}
+\usepackage[russian,english]{babel} % Поддержка русского и английского
+
+% >>> КОММЕНТАРИЙ: Определяем переменные для заголовка и автора (можно изменить)
+\newcommand{\cheatsheettitle}{\color{w3schools}Шпаргалка по частым задачам на leetcode / {\color{alert} Паттерны и примеры} {\color{black} Cheatsheet (XeLaTeX)}}
+\newcommand{\cheatsheetauthor}{Краткий справочник}
+
+% >>> КОММЕНТАРИЙ: Подключаем основной файл шаблона с настройками стилей и пакетов
+\input{cheatsheet-template.tex}
+
+\begin{document}
+\pagestyle{empty} % Убираем номера страниц
+\small % Уменьшаем базовый размер шрифта для всего документа
+
+% >>> КОММЕНТАРИЙ: Используем multicols для создания трех колонок.
+\begin{multicols}{3}
+\raggedcolumns % Не растягивать колонки по вертикали
+
+\noindent
+\begin{minipage}{\linewidth}
+    \centering
+    {\bfseries\huge \cheatsheettitle \par}
+    \vspace{1ex}
+    {\large \cheatsheetauthor \par}
+    \vspace{0.5ex}
+    {\normalsize \today \par} % Вставляем текущую дату
+\end{minipage}
+\vspace{2ex}
+
+\thispagestyle{empty} % Убеждаемся, что и на первой странице нет номера
+
+\scriptsize % Уменьшаем шрифт для оглавления и основного текста
+\tableofcontents % Генерируем оглавление
+
+% >>> КОММЕНТАРИЙ: Подключаем основной контент шпаргалки
+\input{contents/cheatsheet-leetcode-overall.tex}
+
+% >>> КОММЕНТАРИЙ: Печатаем библиографию (если используется \cite)
+\AtNextBibliography{\footnotesize} % Уменьшаем шрифт для библиографии
+%\printbibliography % Раскомментируйте, если добавляли цитаты через \cite или \footcite
+
+\end{multicols}
+
+\end{document}

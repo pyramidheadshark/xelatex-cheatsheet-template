@@ -1,0 +1,478 @@
+% >>> Контент для шпаргалки по SQL для Data Science
+
+% --- Раздел 1 ---
+\section{Базовый Синтаксис и Извлечение Данных}
+
+\begin{myblock}{Основы \texttt{SELECT} и \texttt{FROM}}
+    Извлечение данных – хлеб с маслом аналитика. Начинаем с простого: выбираем нужные столбцы из нужной таблицы.
+    \begin{codebox}{sql}{Выбор конкретных столбцов}
+    SELECT column1, column2 -- Выбираем только нужные колонки
+    FROM table_name;       -- Указываем, из какой таблицы
+    \end{codebox}
+    \begin{codebox}{sql}{Выбор всех столбцов}
+    SELECT *               -- Выбрать ВСЕ столбцы
+    FROM table_name;
+    -- Внимание: Будь осторожен с '*' на больших таблицах.
+    -- Это может быть медленно и неэффективно.
+    -- Лучше явно перечислять нужные столбцы.
+    \end{codebox}
+\end{myblock}
+
+\begin{textbox}{Псевдонимы (\texttt{AS}) и Уникальность (\texttt{DISTINCT})}
+    Делаем запросы читаемыми и получаем только уникальные записи.
+    \begin{codebox}{sql}{Псевдонимы (Aliases)}
+    SELECT
+        user_id AS id, -- Переименовываем user_id в id
+        registration_date AS reg_date -- и registration_date в reg_date
+    FROM
+        users AS u; -- Переименовываем таблицу users в u (удобно для JOIN'ов)
+    -- AS часто можно опустить: SELECT user_id id ...
+    \end{codebox}
+    \begin{codebox}{sql}{Уникальные значения}
+    SELECT DISTINCT city -- Получить список уникальных городов
+    FROM users;
+    \end{codebox}
+\end{textbox}
+
+\begin{myblock}{Ограничение Вывода (\texttt{LIMIT} / \texttt{TOP})}
+    Часто нужно просто взглянуть на первые несколько строк, а не тащить всю таблицу.
+    \begin{codebox}{sql}{LIMIT (PostgreSQL, MySQL, SQLite)}
+    SELECT user_id, name
+    FROM users
+    LIMIT 10; -- Показать только первые 10 строк
+    \end{codebox}
+    \begin{codebox}{sql}{TOP (SQL Server, MS Access)}
+    SELECT TOP 10 user_id, name
+    FROM users; -- Аналогично LIMIT 10
+    \end{codebox}
+    \textit{Примечание: Синтаксис зависит от конкретной СУБД (системы управления базами данных).}
+\end{myblock}
+
+% --- Раздел 2 ---
+\section{Фильтрация Данных (\texttt{WHERE})}
+
+\begin{myblock}{Условия отбора строк}
+    \texttt{WHERE} – твой основной инструмент, чтобы отсеять ненужные строки и оставить только то, что соответствует условиям.
+    \begin{codebox}{sql}{Операторы сравнения}
+    SELECT product_name, price
+    FROM products
+    WHERE price > 100.0; -- Только товары дороже 100
+
+    SELECT order_id, status
+    FROM orders
+    WHERE status != 'cancelled'; -- Все заказы, кроме отмененных (<> тоже работает)
+    \end{codebox}
+    \begin{codebox}{sql}{Логические операторы}
+    SELECT user_id, city, registration_date
+    FROM users
+    WHERE city = 'Moscow' AND registration_date >= '2024-01-01'; -- Москвичи, зарег. в 2024+
+
+    SELECT product_id, category
+    FROM products
+    WHERE category = 'Electronics' OR category = 'Appliances'; -- Электроника ИЛИ быт. техника
+    \end{codebox}
+\end{myblock}
+
+\begin{textbox}{Более сложные условия фильтрации}
+    Часто нужны диапазоны, списки или поиск по шаблону.
+    \begin{codebox}{sql}{Диапазоны и Списки}
+    -- BETWEEN: Включает границы диапазона
+    SELECT order_id, order_date
+    FROM orders
+    WHERE order_date BETWEEN '2024-01-01' AND '2024-01-31';
+
+    -- IN: Проверка на вхождение в список
+    SELECT user_id, country
+    FROM users
+    WHERE country IN ('Russia', 'Belarus', 'Kazakhstan');
+    \end{codebox}
+    \begin{codebox}{sql}{Поиск по шаблону (LIKE)}
+    -- '%' - любая последовательность символов (0 или больше)
+    -- '_' - ровно один любой символ
+    SELECT name
+    FROM users
+    WHERE name LIKE 'А%'; -- Имена, начинающиеся на 'А'
+
+    SELECT email
+    FROM users
+    WHERE email LIKE '%@example.com'; -- Email на домене example.com
+
+    SELECT product_code
+    FROM products
+    WHERE product_code LIKE 'PRD__X'; -- Коды вида PRD<2 символа>X
+    \end{codebox}
+    \begin{codebox}{sql}{Проверка на NULL}
+    SELECT user_id, phone
+    FROM users
+    WHERE phone IS NULL; -- Пользователи без указанного телефона
+
+    SELECT order_id, delivery_date
+    FROM orders
+    WHERE delivery_date IS NOT NULL; -- Заказы, которые были доставлены (дата есть)
+    \end{codebox}
+\end{textbox}
+
+% --- Раздел 3 ---
+\section{Сортировка Результатов (\texttt{ORDER BY})}
+
+\begin{myblock}{Упорядочивание вывода}
+    Чтобы результаты были представлены в нужном порядке (например, от новых к старым, от дорогих к дешевым).
+    \begin{codebox}{sql}{Примеры сортировки}
+    -- Сортировка по одному столбцу (по умолчанию ASC - возрастание)
+    SELECT product_name, price
+    FROM products
+    ORDER BY price; -- От самых дешевых к дорогим (ASC)
+
+    -- Сортировка по убыванию (DESC)
+    SELECT user_id, registration_date
+    FROM users
+    ORDER BY registration_date DESC; -- От самых новых к старым
+
+    -- Сортировка по нескольким столбцам
+    SELECT city, name
+    FROM users
+    ORDER BY city ASC, name ASC; -- Сначала по городу (А-Я), потом по имени (А-Я) внутри города
+    \end{codebox}
+    \textit{Примечание: \texttt{ORDER BY} обычно идет в конце запроса (после \texttt{WHERE}, но до \texttt{LIMIT}).}
+\end{myblock}
+
+% --- Раздел 4 ---
+\section{Агрегатные Функции и Группировка (\texttt{GROUP BY}, \texttt{HAVING})}
+
+\begin{myblock}{Агрегация: Считаем итоги}
+    Агрегатные функции выполняют вычисления над набором строк и возвращают одно значение.
+    \begin{itemize}
+        \item \texttt{COUNT(*)}: Общее количество строк.
+        \item \texttt{COUNT(column)}: Количество не-NULL значений в столбце.
+        \item \texttt{SUM(column)}: Сумма значений.
+        \item \texttt{AVG(column)}: Среднее значение.
+        \item \texttt{MIN(column)}: Минимальное значение.
+        \item \texttt{MAX(column)}: Максимальное значение.
+    \end{itemize}
+    \begin{codebox}{sql}{Примеры агрегатных функций}
+    -- Сколько всего пользователей?
+    SELECT COUNT(*) AS total_users FROM users;
+
+    -- Сколько пользователей указали город?
+    SELECT COUNT(city) AS users_with_city FROM users;
+
+    -- Общая сумма всех заказов
+    SELECT SUM(amount) AS total_revenue FROM orders;
+
+    -- Средняя цена товара
+    SELECT AVG(price) AS avg_product_price FROM products;
+
+    -- Самый ранний и самый поздний заказ
+    SELECT MIN(order_date) AS first_order, MAX(order_date) AS last_order FROM orders;
+    \end{codebox}
+\end{myblock}
+
+\begin{textbox}{Группировка (\texttt{GROUP BY})}
+    \textbf{Идея:} Разделить строки на группы по значениям в одном или нескольких столбцах и применить агрегатные функции \textit{к каждой группе отдельно}.
+    Представь, что ты сортируешь чеки по магазинам (\texttt{GROUP BY store}), а потом считаешь сумму покупок для каждого магазина (\texttt{SUM(amount)}).
+    \begin{codebox}{sql}{Пример GROUP BY}
+    -- Количество пользователей в каждом городе
+    SELECT city, COUNT(*) AS user_count
+    FROM users
+    GROUP BY city
+    ORDER BY user_count DESC; -- Сортируем по количеству
+
+    -- Средняя сумма заказа для каждого пользователя
+    SELECT user_id, AVG(amount) AS avg_order_amount
+    FROM orders
+    GROUP BY user_id;
+    \end{codebox}
+    \textbf{Важное правило:} В части \texttt{SELECT} запроса с \texttt{GROUP BY} могут быть только:
+    \begin{itemize}
+        \item Столбцы, перечисленные в \texttt{GROUP BY}.
+        \item Агрегатные функции.
+    \end{itemize}
+\end{textbox}
+
+\begin{alerttextbox}{Фильтрация После Группировки (\texttt{HAVING})}
+    Что если нужно отфильтровать результаты \textit{после} агрегации? Например, показать только те города, где больше 100 пользователей? Для этого есть \texttt{HAVING}.
+    \begin{codebox}{sql}{Пример HAVING}
+    -- Города с более чем 100 пользователями
+    SELECT city, COUNT(*) AS user_count
+    FROM users
+    GROUP BY city
+    HAVING COUNT(*) > 100 -- Фильтруем по результату агрегации
+    ORDER BY user_count DESC;
+
+    -- Пользователи, чья средняя сумма заказа больше 500
+    SELECT user_id, AVG(amount) AS avg_order_amount
+    FROM orders
+    GROUP BY user_id
+    HAVING AVG(amount) > 500;
+    \end{codebox}
+    \textbf{Ключевое отличие (частый вопрос на собеседованиях):}
+    \begin{itemize}
+        \item \texttt{WHERE} фильтрует \textbf{строки} \textit{до} группировки и агрегации.
+        \item \texttt{HAVING} фильтрует \textbf{группы} \textit{после} группировки и агрегации (работает с результатами агрегатных функций).
+    \end{itemize}
+    \textit{Порядок выполнения (упрощенно): \texttt{FROM} -> \texttt{WHERE} -> \texttt{GROUP BY} -> \texttt{HAVING} -> \texttt{SELECT} -> \texttt{ORDER BY} -> \texttt{LIMIT}.}
+\end{alerttextbox}
+
+% --- Раздел 5 ---
+\section{Объединение Таблиц (\texttt{JOIN})}
+
+\begin{myblock}{Соединяем данные из разных таблиц}
+    Данные часто хранятся в разных таблицах (например, пользователи в одной, их заказы в другой). \texttt{JOIN} позволяет их объединить по общему ключу.
+    \textbf{Аналогия:} Представь два списка – список сотрудников с их ID и список отделов с ID сотрудников. JOIN позволяет "склеить" эти списки, чтобы увидеть, кто в каком отделе работает.
+\end{myblock}
+
+\begin{textbox}{Основные типы JOIN'ов}
+    \begin{codebox}{sql}{INNER JOIN (Внутреннее соединение)}
+    -- Возвращает только те строки, для которых есть совпадение ключа В ОБЕИХ таблицах.
+    -- Если у пользователя нет заказов, он НЕ попадет в результат.
+    SELECT
+        u.name, -- Имя пользователя из таблицы users
+        o.order_id, -- ID заказа из таблицы orders
+        o.amount -- Сумма заказа
+    FROM
+        users AS u
+    INNER JOIN
+        orders AS o ON u.user_id = o.user_id; -- Условие соединения (ключи)
+    \end{codebox}
+
+    \begin{codebox}{sql}{LEFT JOIN (Левое внешнее соединение)}
+    -- Возвращает ВСЕ строки из ЛЕВОЙ таблицы (users)
+    -- и совпадающие строки из ПРАВОЙ таблицы (orders).
+    -- Если у пользователя нет заказов, он ВСЕ РАВНО попадет в результат,
+    -- но столбцы из orders (order_id, amount) будут NULL.
+    -- КРАЙНЕ ВАЖЕН, чтобы не терять данные из основной (левой) таблицы!
+    SELECT
+        u.name,
+        o.order_id,
+        o.amount
+    FROM
+        users AS u
+    LEFT JOIN
+        orders AS o ON u.user_id = o.user_id;
+    \end{codebox}
+
+    \textit{Другие типы (реже используются):}
+    \begin{itemize}
+        \item \texttt{RIGHT JOIN}: Аналогичен \texttt{LEFT JOIN}, но возвращает все строки из правой таблицы.
+        \item \texttt{FULL OUTER JOIN}: Возвращает все строки из обеих таблиц, подставляя \texttt{NULL} там, где нет совпадений.
+        \item \texttt{CROSS JOIN}: Декартово произведение (каждая строка одной таблицы с каждой строкой другой). Используй с большой осторожностью!
+    \end{itemize}
+\end{textbox}
+
+% --- Раздел 6 ---
+\section{Подзапросы (Subqueries)}
+
+\begin{myblock}{Запрос внутри запроса}
+    Подзапрос – это \texttt{SELECT}-запрос, вложенный внутрь другого SQL-запроса. Позволяет выполнять более сложные выборки.
+    \begin{codebox}{sql}{Подзапрос в WHERE (самое частое)}
+    -- Найти пользователей, сделавших заказы на сумму > 1000
+    SELECT name
+    FROM users
+    WHERE user_id IN ( -- Выбираем user_id из подзапроса
+        SELECT user_id
+        FROM orders
+        WHERE amount > 1000
+    );
+
+    -- Найти товары, дороже средней цены всех товаров
+    SELECT product_name, price
+    FROM products
+    WHERE price > ( -- Сравнение со скалярным подзапросом (возвращает 1 значение)
+        SELECT AVG(price) FROM products
+    );
+    \end{codebox}
+    \begin{codebox}{sql}{Подзапрос в FROM (Производная таблица)}
+    -- Сначала считаем среднее в подзапросе, потом выбираем из него
+    SELECT t.avg_val
+    FROM (
+        SELECT category, AVG(price) AS avg_val
+        FROM products
+        GROUP BY category
+    ) AS t -- Псевдоним для подзапроса обязателен!
+    WHERE t.avg_val > 50;
+    \end{codebox}
+    \begin{codebox}{sql}{Подзапрос в SELECT (Скалярный подзапрос)}
+    -- Добавляем столбец с максимальной ценой ко всем строкам
+    SELECT
+        product_name,
+        price,
+        (SELECT MAX(price) FROM products) AS max_overall_price
+    FROM products;
+    \end{codebox}
+    \textit{Операторы для подзапросов в \texttt{WHERE}: \texttt{IN}, \texttt{NOT IN}, \texttt{EXISTS}, \texttt{NOT EXISTS}, операторы сравнения (\texttt{=}, \texttt{>}, \texttt{<} и т.д., если подзапрос возвращает одно значение).}
+\end{myblock}
+
+% --- Раздел 7 ---
+\section{Общие Табличные Выражения (CTE - Common Table Expressions)}
+
+\begin{myblock}{\texttt{WITH}: Улучшаем читаемость сложных запросов}
+    CTE – это именованный временный результирующий набор, на который можно ссылаться в последующем \texttt{SELECT}, \texttt{INSERT}, \texttt{UPDATE} или \texttt{DELETE}.
+    \textbf{Преимущества:}
+    \begin{itemize}
+        \item **Читаемость:** Разбивает сложный запрос на логические блоки.
+        \item **Структура:** Упрощает понимание логики запроса.
+        \item **Переиспользование:** На CTE можно ссылаться несколько раз внутри одного запроса (в большинстве СУБД).
+        \item **Рекурсия:** Позволяют писать рекурсивные запросы (редко нужно в DS).
+    \end{itemize}
+    \textbf{Часто это ЛУЧШЕ, чем вложенные подзапросы!}
+    \begin{codebox}{sql}{Пример CTE}
+    -- Найти пользователей, сделавших > 5 заказов на сумму > 100
+    WITH UserOrderStats AS ( -- Определяем CTE с именем UserOrderStats
+        SELECT
+            user_id,
+            COUNT(*) AS order_count,
+            SUM(amount) AS total_amount
+        FROM orders
+        WHERE amount > 100 -- Фильтр применяется здесь
+        GROUP BY user_id
+    )
+    -- Основной запрос, использующий CTE
+    SELECT
+        u.name,
+        uos.order_count,
+        uos.total_amount
+    FROM
+        users AS u
+    JOIN
+        UserOrderStats AS uos ON u.user_id = uos.user_id
+    WHERE
+        uos.order_count > 5 -- Фильтруем по результатам CTE
+    ORDER BY
+        uos.total_amount DESC;
+    \end{codebox}
+\end{myblock}
+
+% --- Раздел 8 ---
+\section{Оконные Функции (Window Functions)}
+
+\begin{alerttextbox}{Продвинутая аналитика без схлопывания строк}
+    \textbf{Идея:} Оконные функции выполняют вычисления над набором строк ("окном"), которые как-то связаны с текущей строкой, но \textbf{не схлопывают строки}, как \texttt{GROUP BY}. Каждая строка сохраняется, и к ней добавляется результат вычисления оконной функции.
+    \textbf{Аналогия:} Представь, что ты стоишь в очереди. \texttt{GROUP BY} может сказать тебе только, сколько всего людей в очереди. Оконная функция может сказать тебе твой номер в очереди (\texttt{ROW\_NUMBER}), или какой средний рост у людей вокруг тебя (\texttt{AVG() OVER(...)}), не убирая тебя из очереди.
+
+    \textbf{Общий синтаксис:}
+    \texttt{FUNCTION() OVER ( [PARTITION BY ...] [ORDER BY ...] [frame\_clause] )}
+    \begin{itemize}
+        \item \texttt{PARTITION BY column1, ...}: Делит строки на независимые группы (партиции). Функция применяется к каждой партиции отдельно. Похоже на \texttt{GROUP BY}, но строки НЕ схлопываются. Если опущено, всё окно - это все строки.
+        \item \texttt{ORDER BY column2, ...}: Определяет порядок строк внутри партиции. Важно для ранжирующих функций (\texttt{RANK}, \texttt{ROW\_NUMBER}) и функций смещения (\texttt{LAG}, \texttt{LEAD}).
+        \item \texttt{frame\_clause} (\texttt{ROWS/RANGE BETWEEN ...}): Определяет точное подмножество строк внутри партиции для вычисления (например, "текущая строка и 2 предыдущие"). Реже используется новичками.
+    \end{itemize}
+\end{alerttextbox}
+
+\begin{myexampleblock}{Часто используемые оконные функции}
+    \begin{codebox}{sql}{Ранжирующие функции}
+    -- Ранжирование продуктов по цене ВНУТРИ каждой категории
+    SELECT
+        product_name,
+        category,
+        price,
+        ROW_NUMBER() OVER(PARTITION BY category ORDER BY price DESC) AS rn, -- Уникальный номер 1, 2, 3...
+        RANK()       OVER(PARTITION BY category ORDER BY price DESC) AS rk, -- Ранг с пропусками (1, 2, 2, 4...)
+        DENSE_RANK() OVER(PARTITION BY category ORDER BY price DESC) AS drk -- Ранг без пропусков (1, 2, 2, 3...)
+    FROM products;
+    \end{codebox}
+    \begin{codebox}{sql}{Агрегатные функции как оконные}
+    -- Расчет доли цены продукта от средней цены В ЕГО КАТЕГОРИИ
+    SELECT
+        product_name,
+        category,
+        price,
+        AVG(price) OVER(PARTITION BY category) AS avg_price_in_category,
+        price / AVG(price) OVER(PARTITION BY category) AS price_ratio
+    FROM products;
+
+    -- Общая сумма продаж нарастающим итогом по дате
+    SELECT
+      order_date,
+      amount,
+      SUM(amount) OVER(ORDER BY order_date ASC) as cumulative_sales
+    FROM orders;
+    \end{codebox}
+    \begin{codebox}{sql}{Функции смещения (LAG/LEAD)}
+    -- Поиск предыдущей даты заказа для каждого пользователя
+    SELECT
+        user_id,
+        order_date,
+        LAG(order_date, 1) OVER(PARTITION BY user_id ORDER BY order_date ASC) AS previous_order_date
+    FROM orders;
+    -- LAG(столбец, смещение_назад, значение_по_умолчанию)
+    -- LEAD(столбец, смещение_вперед, значение_по_умолчанию)
+    \end{codebox}
+    \textbf{Применение в DS:} Ранжирование (топ N клиентов/товаров в группе), расчет долей (\% от тотала по группе), поиск временных паттернов (время между событиями с \texttt{LAG}/\texttt{LEAD}), скользящие средние/суммы. \textbf{Очень популярная тема на собеседованиях!}
+\end{myexampleblock}
+
+% --- Раздел 9 ---
+\section{Работа с \texttt{NULL}}
+
+\begin{myblock}{Обработка отсутствующих значений}
+    \texttt{NULL} – это специальное значение, означающее "отсутствие данных". С ним нужно работать аккуратно.
+    \begin{codebox}{sql}{COALESCE: Замена NULL}
+    -- Возвращает первое не-NULL значение из списка.
+    -- Очень полезно для подстановки значений по умолчанию.
+    SELECT
+        name,
+        COALESCE(phone, 'Телефон не указан') AS phone_display
+    FROM users;
+
+    -- Если first_name есть, берем его, иначе берем username
+    SELECT COALESCE(first_name, username) AS display_name FROM users;
+    \end{codebox}
+    \begin{codebox}{sql}{NULLIF: NULL, если значения равны}
+    -- Возвращает NULL, если два выражения равны, иначе возвращает первое выражение.
+    -- Полезно, чтобы избежать деления на ноль или обработать "пустые" строки.
+    SELECT
+        product_name,
+        total_sales,
+        total_quantity,
+        -- Избегаем деления на 0: если quantity=0, NULLIF вернет NULL, и деление даст NULL
+        total_sales / NULLIF(total_quantity, 0) AS average_price
+    FROM product_summary;
+    \end{codebox}
+    \textit{Помни: Сравнение с \texttt{NULL} через \texttt{=} или \texttt{!=} почти всегда дает \texttt{UNKNOWN} (не TRUE). Используй \texttt{IS NULL} или \texttt{IS NOT NULL}.}
+\end{myblock}
+
+% --- Раздел 10 ---
+\section{Типы Данных и Преобразования}
+
+\begin{myblock}{Основные типы и конвертация}
+    У каждого столбца есть тип данных. Иногда нужно их преобразовывать.
+    \textbf{Частые типы данных:}
+    \begin{itemize}
+        \item Числовые: \texttt{INTEGER} (INT), \texttt{FLOAT}, \texttt{REAL}, \texttt{NUMERIC}, \texttt{DECIMAL}
+        \item Строковые: \texttt{VARCHAR(n)}, \texttt{TEXT}, \texttt{CHAR(n)}
+        \item Даты/Время: \texttt{DATE}, \texttt{TIME}, \texttt{TIMESTAMP}, \texttt{DATETIME}
+        \item Логический: \texttt{BOOLEAN} (BOOL)
+    \end{itemize}
+    \textit{(Точные имена и доступные типы зависят от СУБД)}
+
+    \begin{codebox}{sql}{Явное преобразование типов (CAST/CONVERT)}
+    -- Синтаксис может отличаться!
+
+    -- CAST (стандартный SQL)
+    SELECT CAST('2024-03-15' AS DATE);
+    SELECT CAST(price AS INTEGER) FROM products; -- Отбросит дробную часть
+    SELECT CAST(user_id AS VARCHAR) FROM users; -- Число в строку
+
+    -- CONVERT (SQL Server)
+    -- SELECT CONVERT(DATE, '2024-03-15');
+    -- SELECT CONVERT(VARCHAR, user_id);
+
+    -- Неявное преобразование тоже бывает, но лучше делать явно.
+    \end{codebox}
+    \textit{Будь внимателен при преобразованиях: возможна потеря данных (например, FLOAT -> INT) или ошибки, если преобразование невозможно ('abc' -> INT).}
+\end{myblock}
+
+% --- Фокус для подготовки ---
+\newpage % Начать новую колонку/страницу для лучшей читаемости фокуса
+\section*{Фокус для Подготовки к Собеседованию}
+\begin{alerttextbox}{На что обратить особое внимание:}
+    \begin{itemize}
+        \item \textbf{Практика, практика, практика!} Теория важна, но умение быстро писать рабочие запросы – ключ. Используй онлайн-тренажеры (LeetCode Database, HackerRank SQL, SQL Fiddle) или скачай SQLite базу с Kaggle и экспериментируй.
+        \item \textbf{JOIN'ы – твой лучший друг (особенно LEFT):} Четко понимай разницу между \texttt{INNER} и \texttt{LEFT JOIN}. Подумай, когда ты можешь потерять данные с \texttt{INNER JOIN} и почему \texttt{LEFT JOIN} часто безопаснее.
+        \item \textbf{Агрегация и Фильтрация Групп:} \texttt{GROUP BY} + Агрегатные функции + \texttt{HAVING} – это классический набор для задач на собеседованиях. Убедись, что ты понимаешь, как они работают вместе и чем \texttt{WHERE} отличается от \texttt{HAVING}.
+        \item \textbf{Оконные Функции – покажи свой уровень:} Даже базовое понимание \texttt{ROW\_NUMBER()}/\texttt{RANK()} и агрегатных функций с \texttt{OVER(PARTITION BY ...)} (например, для расчета доли от итога по группе) произведет хорошее впечатление. \texttt{LAG}/\texttt{LEAD} – бонусные очки.
+        \item \textbf{Чистый и Читаемый Код:} Используй псевдонимы (\texttt{AS}), форматируй запросы (отступы), используй CTE (\texttt{WITH}) для сложных запросов вместо нагромождения подзапросов. Это показывает твою аккуратность и профессионализм.
+    \end{itemize}
+    \textit{Удачи на собеседовании! SQL – это мощный инструмент, и уверенное владение им – большой плюс для любого Data Scientist'а.}
+\end{alerttextbox}
+
+% --- Конец контента ---

@@ -1,331 +1,183 @@
-% \documentclass{article} % ЗАКОММЕНТИРОВАНО: Добавлено для возможности компиляции этого фрагмента отдельно для проверки
 \usepackage{fontspec}
+\setmainfont{PT Sans}
+\setsansfont{PT Sans}
+\setmonofont{Liberation Mono}
 
-% >>> КОММЕНТАРИЙ: Установка основных шрифтов документа (требует установленных шрифтов в системе)
-\setmainfont{PT Sans} % Основной шрифт для текста
-\setsansfont{PT Sans} % Шрифт без засечек (если используется отдельно)
-\setmonofont{Liberation Mono} % Моноширинный шрифт (для кода)
-
-\usepackage{amsmath} % Улучшения для математических формул
-\usepackage{amssymb} % Дополнительные математические символы, включая \mathbb
-
-\usepackage{fontawesome} % Для иконок (например, \faQuoteLeft)
-\usepackage{hyperref} % Для создания кликабельных ссылок (в т.ч. в \resourcelink)
-\usepackage{enumitem} % Для настройки списков
-\usepackage{lipsum} % Для генерации текста-рыбы (не используется в финальной версии)
-\usepackage{xcolor} % Для определения и использования цветов
-\usepackage{minted} % Для подсветки синтаксиса кода (требует Python и Pygments, компиляция с -shell-escape)
-
-% >>>>>> НОВОЕ: Пакет для создания графиков <<<<<<
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{fontawesome}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{lipsum}
+\usepackage{xcolor}
+\usepackage{minted}
 \usepackage{pgfplots}
-\pgfplotsset{compat=newest} % Устанавливаем последнюю версию совместимости
-\usetikzlibrary{arrows.meta, shapes.geometric} % Загружаем полезные библиотеки TikZ
+\pgfplotsset{compat=newest}
+\usetikzlibrary{arrows.meta, shapes.geometric}
 
-\usepackage{titlesec} % Для настройки заголовков секций
-% >>> КОММЕНТАРИЙ: Настройка отступов для заголовков секций (\section)
-\titlespacing*{\section}{0pt}{*1.5}{*0.8} % {отступ слева}{отступ сверху}{отступ снизу}
+\usepackage{tocloft}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{*1.2}{*0.6}
 
-% >>> КОММЕНТАРИЙ: Форматирование заголовков секций (\section)
 \titleformat{\section}
-  {\normalfont\large\bfseries\color{mDarkTeal}} % Стиль заголовка (цвет, размер, жирность)
-  {\thesection} % Номер секции
-  {1em} % Отступ после номера
-  {} % Код перед заголовком (здесь пусто)
+  {\normalfont\normalsize\bfseries\color{mDarkTeal}}
+  {\thesection}
+  {1em}
+  {}
 
-% >>> КОММЕНТАРИЙ: Определение пользовательских цветов через HTML-коды
-\definecolor{customcolor}{HTML}{696EA8} % Основной цвет для блоков textbox
-\definecolor{alert}{HTML}{CD5C5C} % Цвет для выделения (красный)
-\definecolor{w3schools}{HTML}{4CAF50} % Цвет для выделения (зеленый)
-\definecolor{subbox}{gray}{0.60} % Цвет для под-блоков (не используется?)
-\definecolor{codecolor}{HTML}{FFC300} % Цвет для кода (не используется?)
-\definecolor{mDarkTeal}{HTML}{23373b} % Темно-бирюзовый (для заголовков секций, названий блоков)
-\colorlet{beamerboxbg}{black!2} % Фон для beamerbox (не используется?)
-\colorlet{beamerboxfg}{mDarkTeal} % Цвет текста для beamerbox (не используется?)
-\definecolor{mDarkBrown}{HTML}{604c38} % Темно-коричневый (не используется?)
-\definecolor{mLightBrown}{HTML}{EB811B} % Светло-коричневый (для заголовков myalertblock)
-\definecolor{mLightGreen}{HTML}{14B03D} % Светло-зеленый (для заголовков myexampleblock)
-\definecolor{alertTextBox}{HTML}{A8696E} % Цвет для блоков alerttextbox
+\renewcommand{\cftsecfont}{\small\bfseries} % Шрифт для названий секций в TOC (small, жирный)
+\renewcommand{\cftsecpagefont}{\small} % Шрифт для номеров страниц секций в TOC (small)
+\setlength{\cftbeforesecskip}{0.5ex} % Уменьшен вертикальный отступ перед пунктом секции в TOC
+\setlength{\cftparskip}{0pt} % Убираем доп. отступ между абзацами (если он вдруг есть) в TOC
+% \setlength{\cftsecindent}{<длина>} % Можно настроить отступ слева для секций
+% \setlength{\cftsecnumwidth}{<длина>} % Можно настроить ширину поля для номера секции
+% \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % Точки между названием и номером страницы (стандартно)
 
-% >>> КОММЕНТАРИЙ: Настройка пакета biblatex для библиографии
+\definecolor{customcolor}{HTML}{696EA8}
+\definecolor{alert}{HTML}{CD5C5C}
+\definecolor{w3schools}{HTML}{4CAF50}
+\definecolor{subbox}{gray}{0.60}
+\definecolor{codecolor}{HTML}{FFC300}
+\definecolor{mDarkTeal}{HTML}{23373b}
+\colorlet{beamerboxbg}{black!2}
+\colorlet{beamerboxfg}{mDarkTeal}
+\definecolor{mDarkBrown}{HTML}{604c38}
+\definecolor{mLightBrown}{HTML}{EB811B}
+\definecolor{mLightGreen}{HTML}{14B03D}
+\definecolor{alertTextBox}{HTML}{A8696E}
+
 \usepackage
-[citestyle=authoryear, % Стиль цитирования (Автор-Год)
-sorting=nty, % Сортировка по Имени, Году, Названию
-autocite=footnote, % Команда \autocite создает сноски
-autolang=hyphen, % Автоматическое определение языка для переносов
-mincrossrefs=1, % Минимальное количество перекрестных ссылок
-backend=biber] % Используемый бэкенд (требует запуск biber)
+[citestyle=authoryear, sorting=nty, autocite=footnote, autolang=hyphen, mincrossrefs=1, backend=biber]
 {biblatex}
-
-% >>> КОММЕНТАРИЙ: Настройка формата пост-заметок в цитатах (например, номера страниц)
 \DeclareFieldFormat{postnote}{#1}
 \DeclareFieldFormat{multipostnote}{#1}
-\DeclareAutoCiteCommand{footnote}[f]{\footcite}{\footcites} % Настройка команды \autocite
-
-% >>> КОММЕНТАРИЙ: Подключение файла с библиографическими записями
+\DeclareAutoCiteCommand{footnote}[f]{\footcite}{\footcites}
 \addbibresource{literature.bib}
 
-% >>> КОММЕНТАРИЙ: Подключение библиотеки tcolorbox для создания цветных блоков
 \usepackage{tcolorbox}
-\tcbuselibrary{most, listingsutf8, minted} % Загрузка необходимых библиотек tcolorbox (most включает breakable)
+\tcbuselibrary{most, listingsutf8, minted}
 
-% >>> КОММЕНТАРИЙ: Глобальные настройки для маленьких tcbox (inline блоки)
 \tcbset{tcbox width=auto,left=1mm,top=1mm,bottom=1mm,
 right=1mm,boxsep=1mm,middle=1pt}
 
-% >>> КОММЕНТАРИЙ: Определение базового окружения для цветных блоков с заголовком
-% breakable: позволяет блоку разрываться между колонками/страницами.
-% ВАЖНО: В multicols автоматический разрыв breakable может работать не всегда идеально.
-% Если блок разрывается некрасиво, попробуйте разбить контент на несколько блоков
-% или используйте \needspace{<длина>} перед блоком.
 \newenvironment{mycolorbox}[2]{
 \begin{tcolorbox}[capture=minipage,fonttitle=\large\bfseries, enhanced,boxsep=1mm,colback=#1!30!white,
-width=\linewidth, % Ширина блока равна ширине текущей колонки
-arc=2pt,outer arc=2pt, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
-breakable, % Разрешить разрыв блока
-title=#2] % Текст заголовка блока
+width=\linewidth, arc=2pt,outer arc=2pt, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
+breakable, title=#2]
 }{\end{tcolorbox}}
 
-% >>> КОММЕНТАРИЙ: Окружение subbox (не используется в текущем коде)
 \newenvironment{subbox}[2]{
 \begin{tcolorbox}[capture=minipage,fonttitle=\normalsize\bfseries, enhanced,boxsep=1mm,colback=#1!30!white,on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,colframe=#1,opacityback=0.7,nobeforeafter,
-breakable,
-title=#2]\footnotesize
+breakable, title=#2]\footnotesize
 }{\normalsize\end{tcolorbox}\vspace{0.1em}}
 
-% >>> КОММЕНТАРИЙ: Окружение для размещения tcolorbox'ов в несколько колонок внутри блока (не используется)
 \newenvironment{multibox}[1]{
 \begin{tcbraster}[raster columns=#1,raster equal height,nobeforeafter,raster column skip=1em,raster left skip=1em,raster right skip=1em]}{\end{tcbraster}}
 
-% >>> КОММЕНТАРИЙ: Окружения-обертки для mycolorbox с предопределенными цветами и заголовками
-\newenvironment{textbox}[1]{\begin{mycolorbox}{customcolor}{#1}}{\end{mycolorbox}} % Обычный текстовый блок
-\newenvironment{alerttextbox}[1]{\begin{mycolorbox}{alertTextBox}{#1}}{\end{mycolorbox}} % Блок для предупреждений/важной информации
+\newenvironment{textbox}[1]{\begin{mycolorbox}{customcolor}{#1}}{\end{mycolorbox}}
+\newenvironment{alerttextbox}[1]{\begin{mycolorbox}{alertTextBox}{#1}}{\end{mycolorbox}}
 
-% >>> КОММЕНТАРИЙ: Определение окружения для блоков с кодом с подсветкой minted
-\newtcblisting{codebox}[3][]{ % [опции minted], {язык}, {заголовок}
-colback=black!10,colframe=black!20, % Цвета фона и рамки
-listing only, % Показывать только листинг кода
-minted options={ % Опции, передаваемые в minted
-    numbers=left, % Нумерация строк слева
-    style=default, % Стиль подсветки (можно выбрать другие, напр., 'friendly')
-    fontsize=\scriptsize, % Размер шрифта кода
-    breaklines, % Автоматический перенос длинных строк
-    breaksymbolleft=, % Символ для обозначения переноса (пусто)
-    autogobble, % Удаление лишних отступов слева
-    linenos, % Показывать номера строк
-    numbersep=0.7em, % Отступ номеров строк от кода
-    #1 % Дополнительные опции minted, переданные в [1]
-    },
-enhanced,top=1mm, toptitle=0mm,
-left=5mm, % Отступ слева внутри блока (для номеров строк)
-arc=0pt,outer arc=0pt, % Прямые углы
-title={#3}, % Заголовок блока кода
-fonttitle=\small\bfseries\color{mDarkTeal}, % Стиль заголовка блока кода
-listing engine=minted, % Движок для листинга - minted
-minted language=#2, % Язык программирования для подсветки
-breakable % Разрешить разрыв блока кода
+\newtcblisting{codebox}[3][]{
+colback=black!10,colframe=black!20, listing only,
+minted options={numbers=left, style=default, fontsize=\scriptsize, breaklines, breaksymbolleft=, autogobble, linenos, numbersep=0.7em, #1},
+enhanced,top=1mm, toptitle=0mm, left=5mm, arc=0pt,outer arc=0pt,
+title={#3}, fonttitle=\small\bfseries\color{mDarkTeal},
+listing engine=minted, minted language=#2, breakable
 }
 
-\newcommand{\punkti}{~\lbrack\dots\rbrack~} % Команда для [...] (не используется)
+\newcommand{\punkti}{~\lbrack\dots\rbrack~}
 
-% >>> КОММЕНТАРИЙ: Переопределение окружения quote для добавления иконок цитат
 \renewenvironment{quote}
                {\list{\faQuoteLeft\phantom{ }}{\rightmargin\leftmargin}
                 \item\relax\scriptsize\ignorespaces}
                {\unskip\unskip\phantom{xx}\faQuoteRight\endlist}
 
-% >>> КОММЕНТАРИЙ: Вспомогательные команды для создания цветных фонов под текстом (не используются)
 \newcommand{\bgupper}[3]{\colorbox{#1}{\color{#2}\huge\bfseries\MakeUppercase{#3}}}
 \newcommand{\bg}[3]{\colorbox{#1}{\bfseries\color{#2}#3}}
 
-% >>> КОММЕНТАРИЙ: Команда для форматирования описания команды/функции
-% #1: Сама команда (используется \detokenize для корректного отображения спецсимволов)
-% #2: Описание команды
 \newcommand{\mycommand}[2]{
-  {\par\noindent\ttfamily\detokenize{#1}\par} % Вывод команды моноширинным шрифтом
-  \nopagebreak % Стараемся не разрывать страницу после команды
-  \hangindent=1.5em \hangafter=1 \noindent % Делаем отступ для описания
-  \small\textit{#2}\par\vspace{0.5ex} % Вывод описания и небольшой отступ после
-}
-
-% >>> КОММЕНТАРИЙ: Команда для форматирования ссылок на ресурсы
-% #1: URL ссылки
-% #2: Текст ссылки
-% #3: Описание ресурса
-\newcommand{\resourcelink}[3]{
-  {\par\noindent\href{#1}{\ttfamily #2}\par} % Вывод кликабельной ссылки
+  {\par\noindent\ttfamily\detokenize{#1}\par}
   \nopagebreak
   \hangindent=1.5em \hangafter=1 \noindent
-  \small\textit{#3}\par\vspace{0.5ex} % Вывод описания
+  \small\textit{#2}\par\vspace{0.5ex}
 }
 
-% >>> КОММЕНТАРИЙ: Вспомогательные команды для стилизации
-\newcommand{\sep}{{\scriptsize~\faCircle{ }~}} % Разделитель-кружок
-\newcommand{\bggreen}[1]{\medskip\bgupper{w3schools}{black}{#1}\\[0.5em]} % Зеленый заголовок (не используется)
-\newcommand{\green}[1]{\smallskip\bg{w3schools}{white}{#1}\\} % Текст на зеленом фоне
-\newcommand{\red}[1]{\smallskip\bg{alert}{white}{#1}\\} % Текст на красном фоне
-\newcommand{\alertcmd}[1]{\red{#1}\\} % Псевдоним для red (переименовано чтобы не конфликтовать с цветом alert)
+\newcommand{\resourcelink}[3]{
+  {\par\noindent\href{#1}{\ttfamily #2}\par}
+  \nopagebreak
+  \hangindent=1.5em \hangafter=1 \noindent
+  \small\textit{#3}\par\vspace{0.5ex}
+}
 
-\usepackage{multicol} % Пакет для создания нескольких колонок
-\setlength{\columnsep}{15pt} % Расстояние между колонками
+\newcommand{\sep}{{\scriptsize~\faCircle{ }~}}
+\newcommand{\bggreen}[1]{\medskip\bgupper{w3schools}{black}{#1}\\[0.5em]}
+\newcommand{\green}[1]{\smallskip\bg{w3schools}{white}{#1}\\}
+\newcommand{\red}[1]{\smallskip\bg{alert}{white}{#1}\\}
+\newcommand{\alertcmd}[1]{\red{#1}\\}
 
-\setlength{\parindent}{0pt} % Убираем абзацный отступ по умолчанию
-\usepackage{csquotes} % Для правильного отображения кавычек в разных языках (используется biblatex)
-\newcommand{\loremipsum}{Lorem ipsum dolor sit amet.} % Пример текста (не используется)
+\usepackage{multicol}
+\setlength{\columnsep}{15pt}
 
-% >>> КОММЕНТАРИЙ: Окружения для блоков с разными цветами заголовков (пример, предупреждение, обычный)
-% Основаны на tcolorbox, похожи на mycolorbox, но с другими цветами заголовков и рамки.
-% Также используют breakable. Применяются для выделения примеров, предупреждений и т.д.
-% ВАЖНО: Лог может содержать предупреждения "Underfull \hbox (badness 10000)".
-% Это часто случается в узких колонках multicol при наличии кода, URL или текста,
-% который плохо переносится. Обычно это лишь косметическая проблема, строки выглядят
-% немного не до конца заполненными. Можно игнорировать или попробовать перефразировать/
-% использовать \sloppy перед проблемным абзацем.
-\newenvironment{myexampleblock}[1]{ % Блок для примеров (зеленый заголовок)
+\setlength{\parindent}{0pt}
+\usepackage{csquotes}
+\newcommand{\loremipsum}{Lorem ipsum dolor sit amet.}
+
+\newenvironment{myexampleblock}[1]{
     \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightGreen}, enhanced,boxsep=1mm,colback=black!10,breakable,noparskip,
     on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
     colframe=black!20,arc=0pt,outer arc=0pt,
     opacityback=0.7,nobeforeafter,title=#1]}
     {\endtcolorbox}
 
-\newenvironment{myalertblock}[1]{ % Блок для предупреждений (оранжевый заголовок)
+\newenvironment{myalertblock}[1]{
     \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mLightBrown}, enhanced,boxsep=1mm,colback=black!10,breakable,noparskip,
     on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
     colframe=black!20,arc=0pt,outer arc=0pt,
     opacityback=0.7,nobeforeafter,title=#1]}
     {\endtcolorbox}
 
-\newenvironment{myblock}[1]{ % Обычный информационный блок (бирюзовый заголовок)
+\newenvironment{myblock}[1]{
     \tcolorbox[capture=minipage,fonttitle=\small\bfseries\color{mDarkTeal}, enhanced,boxsep=1mm,colback=black!10,breakable,noparskip,
     on line,tcbox width=auto,left=0.3em,top=1mm, toptitle=0mm,
     colframe=black!20, arc=0pt,outer arc=0pt,
     opacityback=0.7,nobeforeafter,title=#1]}
     {\endtcolorbox}
 
-% >>> КОММЕНТАРИЙ: Команда для вставки изображения в рамке tcolorbox с подписью
-% #1: Опции (не используются)
-% #2: Путь к файлу изображения (используется как подпись под изображением)
 \newcommand{\mygraphics}[2][]{
 \tcbox[enhanced,boxsep=0pt,top=0pt,bottom=0pt,left=0pt,
 right=0pt,boxrule=0.4pt,drop fuzzy shadow,clip upper,
 colback=black!75!white,toptitle=2pt,bottomtitle=2pt,nobeforeafter,
-center title,fonttitle=\small\sffamily,title=\detokenize{#2}] % Используем путь как заголовок
-{\includegraphics[width=\the\dimexpr(\linewidth-4mm)\relax]{#2}} % Вставляем изображение, ширина чуть меньше колонки
+center title,fonttitle=\small\sffamily,title=\detokenize{#2}]
+{\includegraphics[width=\the\dimexpr(\linewidth-4mm)\relax]{#2}}
 }
 
-% >>> КОМЕНТАРИЙ: Команда \needspace{<длина>}
-% Используйте эту команду *перед* блоком (tcolorbox, section, figure), чтобы убедиться,
-% что в текущей колонке есть как минимум <длина> свободного места. Если места нет,
-% LaTeX начнет новую колонку/страницу перед выполнением команды.
-% Пример: \needspace{10\baselineskip} % Запросить место для примерно 10 строк текста
-% Это полезно для предотвращения "висячих" заголовков или некрасивых разрывов блоков.
-
-% >>>>>> НОВОЕ: Стили для графиков PGFPlots <<<<<<
 \pgfplotsset{
-    % Базовый стиль для всех графиков в шпаргалке
     cheatsheet plot style/.style={
-        width=0.98\linewidth, % Ширина чуть меньше колонки для аккуратности
-        height=5cm,          % Высота графика (можно изменить по необходимости)
-        grid=major,          % Включаем основную сетку
-        grid style={dashed, color=black!20}, % Стиль сетки: пунктирная, светло-серая
-        axis lines=left,     % Линии осей только слева и снизу
-        axis line style={color=black!60, thick}, % Стиль линий осей: серые, потолще
-        tick style={color=black!60, thick}, % Стиль меток на осях
-        ticklabel style={font=\scriptsize, color=black}, % Стиль подписей меток: маленький шрифт
-        label style={font=\small, color=mDarkTeal}, % Стиль подписей осей: шрифт small, цвет как у заголовков блоков
-        title style={font=\small\bfseries, color=mDarkTeal}, % Стиль заголовка графика
-        legend style={        % Стиль легенды
-            font=\scriptsize, % Маленький шрифт
-            draw=black!30,    % Легкая рамка вокруг легенды
-            fill=white,       % Белый фон
-            legend cell align=left, % Выравнивание текста в ячейке легенды
-            anchor=north east, % Якорь для позиционирования
-            at={(rel axis cs:0.98,0.98)} % Положение в правом верхнем углу внутри области графика
+        width=0.98\linewidth, height=5cm, grid=major,
+        grid style={dashed, color=black!20}, axis lines=left,
+        axis line style={color=black!60, thick}, tick style={color=black!60, thick},
+        ticklabel style={font=\scriptsize, color=black},
+        label style={font=\small, color=mDarkTeal},
+        title style={font=\small\bfseries, color=mDarkTeal},
+        legend style={font=\scriptsize, draw=black!30, fill=white,
+            legend cell align=left, anchor=north east, at={(rel axis cs:0.98,0.98)}},
+        cycle list={
+            {blue, mark=*, thick},{alert, mark=square, thick},{w3schools, mark=triangle, thick},
+            {mLightBrown, mark=diamond, thick},{customcolor, mark=oplus, thick},{black!50, mark=pentagon, thick},
         },
-        cycle list={ % Список стилей для линий \addplot (цвета взяты из шаблона)
-            {blue, mark=*, thick},
-            {alert, mark=square, thick},
-            {w3schools, mark=triangle, thick},
-            {mLightBrown, mark=diamond, thick},
-            {customcolor, mark=oplus, thick},
-            {black!50, mark=pentagon, thick},
-        },
-        % Убираем рамку вокруг графика по умолчанию
         axis background/.style={fill=none},
     },
-    % Дополнительный стиль для ROC-кривой (без сетки, с диагональю)
     roc curve style/.style={
-        cheatsheet plot style, % Наследуем базовый стиль
-        width=6cm, height=6cm, % Делаем квадратным
-        grid=none, % Убираем сетку
-        xlabel={False Positive Rate (FPR)},
-        ylabel={True Positive Rate (TPR)},
-        xmin=0, xmax=1,
-        ymin=0, ymax=1,
-        xtick={0, 0.5, 1},
-        ytick={0, 0.5, 1},
-        legend pos=south east, % Легенда внизу справа
-        % Добавляем диагональную линию случайного угадывания
-        extra x ticks={0.5}, extra y ticks={0.5},
+        cheatsheet plot style, width=6cm, height=6cm, grid=none,
+        xlabel={False Positive Rate (FPR)}, ylabel={True Positive Rate (TPR)},
+        xmin=0, xmax=1, ymin=0, ymax=1, xtick={0, 0.5, 1}, ytick={0, 0.5, 1},
+        legend pos=south east, extra x ticks={0.5}, extra y ticks={0.5},
         extra tick style={grid=major, grid style={dashed, color=black!40}},
-        after end axis/.code={ % Добавляем линию после отрисовки осей
-            \draw[dashed, color=black!40] (axis cs:0,0) -- (axis cs:1,1);
-        }
+        after end axis/.code={\draw[dashed, color=black!40] (axis cs:0,0) -- (axis cs:1,1);}
     },
-    % Дополнительный стиль для PR-кривой
     pr curve style/.style={
-        cheatsheet plot style, % Наследуем базовый стиль
-        xlabel={Recall (TPR)},
-        ylabel={Precision},
-        xmin=0, xmax=1,
-        ymin=0, ymax=1,
-        legend pos=south west, % Легенда внизу слева
+        cheatsheet plot style, xlabel={Recall (TPR)}, ylabel={Precision},
+        xmin=0, xmax=1, ymin=0, ymax=1, legend pos=south west,
     }
 }
-
-% % Добавлено для возможности компиляции этого фрагмента отдельно для проверки
-% \begin{document}
-% \begin{multicols}{2} % Пример использования в multicols
-% \lipsum[1] % Просто текст для заполнения
-
-% \begin{textbox}{Пример графика (Базовый стиль)}
-%     \begin{center}
-%     \begin{tikzpicture}
-%         \begin{axis}[cheatsheet plot style, title={Пример $y=x^2$ и $y=x+1$}]
-%         \addplot coordinates {(0, 0) (1, 1) (2, 4) (3, 9) (4, 16)};
-%         \addlegendentry{$y=x^2$}
-%         \addplot coordinates {(0, 1) (1, 2) (2, 3) (3, 4) (4, 5)};
-%         \addlegendentry{$y=x+1$}
-%         \end{axis}
-%     \end{tikzpicture}
-%     \end{center}
-% \end{textbox}
-
-% \begin{myexampleblock}{Пример ROC-кривой}
-%     \begin{center}
-%     \begin{tikzpicture}
-%         \begin{axis}[roc curve style, title={Пример ROC Curve}]
-%         % Пример данных ROC кривой
-%         \addplot coordinates { (0,0) (0.1,0.3) (0.2,0.6) (0.4,0.8) (0.6,0.9) (0.8,0.95) (1,1) };
-%         \addlegendentry{Модель A (AUC $\approx$ 0.8)}
-%         \addplot coordinates { (0,0) (0.2,0.2) (0.4,0.4) (0.6,0.6) (0.8,0.8) (1,1) }; % Пример хуже
-%         \addlegendentry{Модель B (AUC = 0.5)}
-%         \end{axis}
-%     \end{tikzpicture}
-%     \end{center}
-% \end{myexampleblock}
-
-% \begin{myblock}{Пример PR-кривой}
-%     \begin{center}
-%     \begin{tikzpicture}
-%         \begin{axis}[pr curve style, title={Пример Precision-Recall Curve}]
-%         % Пример данных PR кривой (могут сильно зависеть от порога)
-%         \addplot coordinates { (0,0.9) (0.1,0.85) (0.3,0.8) (0.5,0.7) (0.7,0.6) (0.9,0.4) (1,0.3) };
-%         \addlegendentry{Модель C}
-%         \end{axis}
-%     \end{tikzpicture}
-%     \end{center}
-% \end{myblock}
-
-% \lipsum[2-3] % Просто текст для заполнения
-% \end{multicols}
-% \end{document}

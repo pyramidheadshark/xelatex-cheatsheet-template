@@ -1,45 +1,51 @@
 \documentclass[10pt,a4paper]{article}
 
 \usepackage[landscape,margin=0.7cm]{geometry}
-\usepackage[russian,english]{babel} % Поддержка русского и английского
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\usepackage{microtype}
 
-% >>> КОММЕНТАРИЙ: Определяем переменные для заголовка и автора (можно изменить)
-\newcommand{\cheatsheettitle}{\color{w3schools}Шпаргалка по Pandas / {\color{alert} Pandas} {\color{black} Cheatsheet (XeLaTeX)}}
+\usepackage{xcolor} % Определение цветов (если не в шаблоне)
+\definecolor{w3schools}{HTML}{04AA6D} % Пример
+\definecolor{alert}{HTML}{FF0000}    % Пример
+
+\newcommand{\cheatsheettitle}{\color{w3schools}Шпаргалка по Pandas / {\color{alert} Pandas} {\color{black} Cheatsheet}}
 \newcommand{\cheatsheetauthor}{Краткий справочник по основным операциям}
 
-% >>> КОММЕНТАРИЙ: Подключаем основной файл шаблона с настройками стилей и пакетов
+% >>> Подключаем шаблон <<<
 \input{cheatsheet-template.tex}
 
 \begin{document}
-\pagestyle{empty} % Убираем номера страниц
-\small % Уменьшаем базовый размер шрифта для всего документа
+\pagestyle{empty}
 
-% >>> КОММЕНТАРИЙ: Используем multicols для создания трех колонок.
-\begin{multicols}{3}
-\raggedcolumns % Не растягивать колонки по вертикали
-
+% --- Заголовок (ВНЕ multicols) ---
 \noindent
 \begin{minipage}{\linewidth}
     \centering
-    {\bfseries\huge \cheatsheettitle \par}
+    {\bfseries\Large \cheatsheettitle \par}
     \vspace{1ex}
     {\large \cheatsheetauthor \par}
-    \vspace{0.5ex}
-    {\normalsize \today \par} % Вставляем текущую дату
+    % \vspace{0.5ex}
+    % {\normalsize \today \par} % Дата убрана
 \end{minipage}
 \vspace{2ex}
 
-\thispagestyle{empty} % Убеждаемся, что и на первой странице нет номера
+% --- Основной контент в колонках ---
+\begin{multicols}{3}
+\raggedcolumns
 
-\scriptsize % Уменьшаем шрифт для оглавления и основного текста
-\tableofcontents % Генерируем оглавление
+% >>> Оглавление будет отформатировано с помощью tocloft из шаблона <<<
+\tableofcontents
+\vspace{1em}
 
-% >>> КОММЕНТАРИЙ: Подключаем основной контент шпаргалки
-\input{contents/cheatsheet-pandas.tex}
+% >>> Устанавливаем размер шрифта для основного контента ПОСЛЕ TOC <<<
+\small % Можно \normalsize, если нужно крупнее
 
-% >>> КОММЕНТАРИЙ: Печатаем библиографию (если используется \cite)
-\AtNextBibliography{\footnotesize} % Уменьшаем шрифт для библиографии
-%\printbibliography % Раскомментируйте, если добавляли цитаты через \cite или \footcite
+\input{contents/cheatsheet-pandas.tex} % Контент шпаргалки
+
+% \AtNextBibliography{\footnotesize}
+% \printbibliography
 
 \end{multicols}
 

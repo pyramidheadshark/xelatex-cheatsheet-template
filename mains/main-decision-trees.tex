@@ -1,45 +1,45 @@
 \documentclass[10pt,a4paper]{article}
 
 \usepackage[landscape,margin=0.7cm]{geometry}
-\usepackage[russian,english]{babel} % Поддержка русского и английского
+\usepackage{polyglossia}
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\usepackage{microtype}
 
-% >>> КОММЕНТАРИЙ: Определяем переменные для заголовка и автора (можно изменить)
+\usepackage{xcolor}
+\definecolor{w3schools}{HTML}{04AA6D}
+\definecolor{alert}{HTML}{FF0000}
+
 \newcommand{\cheatsheettitle}{\color{w3schools}Шпаргалка по деревьям решений / {\color{alert} Концепции} {\color{black} Cheatsheet (XeLaTeX)}}
 \newcommand{\cheatsheetauthor}{Краткий справочник}
 
-% >>> КОММЕНТАРИЙ: Подключаем основной файл шаблона с настройками стилей и пакетов
 \input{cheatsheet-template.tex}
 
 \begin{document}
-\pagestyle{empty} % Убираем номера страниц
-\small % Уменьшаем базовый размер шрифта для всего документа
+\pagestyle{empty}
 
-% >>> КОММЕНТАРИЙ: Используем multicols для создания трех колонок.
-\begin{multicols}{3}
-\raggedcolumns % Не растягивать колонки по вертикали
-
+% --- Заголовок (ВНЕ multicols) ---
 \noindent
 \begin{minipage}{\linewidth}
     \centering
-    {\bfseries\huge \cheatsheettitle \par}
+    {\bfseries\Large \cheatsheettitle \par}
     \vspace{1ex}
     {\large \cheatsheetauthor \par}
-    \vspace{0.5ex}
-    {\normalsize \today \par} % Вставляем текущую дату
+    % \vspace{0.5ex}
+    % {\normalsize \today \par}
 \end{minipage}
 \vspace{2ex}
 
-\thispagestyle{empty} % Убеждаемся, что и на первой странице нет номера
+% --- Основной контент в колонках ---
+\begin{multicols}{3}
+\raggedcolumns
 
-\scriptsize % Уменьшаем шрифт для оглавления и основного текста
-\tableofcontents % Генерируем оглавление
+\tableofcontents
+\vspace{1em}
 
-% >>> КОММЕНТАРИЙ: Подключаем основной контент шпаргалки
+\small
+
 \input{contents/cheatsheet-decision-trees.tex}
-
-% >>> КОММЕНТАРИЙ: Печатаем библиографию (если используется \cite)
-\AtNextBibliography{\footnotesize} % Уменьшаем шрифт для библиографии
-%\printbibliography % Раскомментируйте, если добавляли цитаты через \cite или \footcite
 
 \end{multicols}
 

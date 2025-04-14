@@ -1,226 +1,782 @@
-% >>> Контент для шпаргалки "Алгоритмические Паттерны (LeetCode Medium Focus)"
-% Версия с улучшениями от пользователя
+% ================================================
+% Алгоритмические Паттерны - Шпаргалка v2
+% ================================================
 
-% --- Введение ---
-\begin{myblock}{Зачем нужны паттерны?}
-    Собеседования по алгоритмам часто проверяют не знание сотен задач, а умение распознавать \textbf{основные подходы (паттерны)} к их решению. Знание паттернов позволяет быстро выбрать правильную структуру данных и алгоритм, даже если ты видишь задачу впервые. Это как иметь набор универсальных инструментов для разных типов винтов. Фокусируемся на паттернах, часто встречающихся в задачах уровня Medium на LeetCode.
+% ================================================
+% Секция 1: HashTable / Словари / Множества (Hash Map / Set)
+% ================================================
+\section{HashTable / Словари / Множества (Hash Map / Set)}
+
+\subsection{Суть Структуры Данных}
+\begin{myblock}{Академическое Описание}
+    Структура данных, отображающая ключи (keys) на значения (values) с использованием хеш-функции. Обеспечивает в среднем $O(1)$ время для операций вставки, удаления и поиска.
+\end{myblock}
+\begin{myblock}{Множества (Sets)}
+    Хранят только уникальные ключи, эффективно проверяя наличие элемента ($O(1)$ в среднем).
 \end{myblock}
 
-% --- Раздел 1: Паттерны для Массивов/Строк ---
-\section{Паттерны для Массивов/Строк}
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Представьте себе картотеку. У каждой карточки есть уникальный номер (ключ). Вы можете почти мгновенно найти карточку по номеру, добавить новую или убрать старую. Множество (Set) похоже на список уникальных посетителей: можно быстро проверить, есть ли человек в списке.
+\end{myblock}
 
-\begin{textbox}{Паттерн: Два Указателя (Two Pointers)}
-    \textbf{Идея:} Использование двух указателей (обычно индексов), которые движутся по массиву (или строке, или связанному списку) для выполнения какой-либо операции. Они могут двигаться навстречу друг другу, в одном направлении с разной скоростью или один может "ждать" другого. \sep
-    \textbf{Аналогия:} Два человека идут по тропинке. Либо навстречу (например, найти место встречи посередине), либо один догоняет другого (проверить, есть ли цикл), либо идут вместе с фиксированным расстоянием (скользящее окно, но без изменения размера). \sep
-    \textbf{Типовые задачи:}
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Ищите необходимость быстро проверить \emph{наличие} элемента, \emph{подсчитать частоту}, \emph{сгруппировать} элементы, найти \emph{пары} с определенным свойством, проверить на \emph{дубликаты} или \emph{анаграммы}. \newline
+    Ключевые слова: "пара", "сумма", "частота", "группа", "уникальный", "дубликат", "анаграмма", \texttt{contains}, \texttt{exists}.
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
     \begin{itemize}[nosep, leftmargin=*]
-        % *** ИЗМЕНЕНИЕ 1: Добавлен акцент на сортировку ***
-        \item Найти два числа в \textit{\textbf{отсортированном}} массиве, сумма которых равна X. (Указатели с разных концов).
-        \item Проверить, является ли строка палиндромом. (Указатели с разных концов).
-        \item Удалить дубликаты из \textit{отсортированного} массива "на месте". (Один указатель пишет, другой читает).
-        \item Найти цикл в связанном списке (см. раздел "Связанные списки").
-    \end{itemize} \sep
-    \textbf{Сложность:} Обычно \textbf{$O(N)$} по времени, \textbf{$O(1)$} по памяти (если модификация "на месте").
-\end{textbox}
-
-\begin{textbox}{Паттерн: Скользящее Окно (Sliding Window)}
-    \textbf{Идея:} Поддержание "окна" (подмассива или подстроки) определенного размера (или с определенными свойствами), которое "скользит" по основной структуре данных. Часто используется для задач, связанных с поиском оптимального непрерывного подмассива/подстроки. Размер окна может быть фиксированным или динамическим. \sep
-    \textbf{Аналогия:} Лупа, которую двигают вдоль длинного текста, чтобы рассмотреть фрагмент (окно). Размер лупы (окна) может быть постоянным или меняться. \sep
-    \textbf{Типовые задачи:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item Найти максимальную/минимальную сумму подмассива \textit{фиксированного} размера K.
-        \item Найти длину самой длинной подстроки \textit{без повторяющихся символов}. (Размер окна динамический).
-        \item Найти все анаграммы подстроки S1 в строке S2. (Окно размера S1, проверяем совпадение частот символов).
-    \end{itemize} \sep
-    \textbf{Сложность:} Обычно \textbf{$O(N)$} по времени (каждый элемент посещается 1-2 раза), \textbf{$O(k)$} или \textbf{$O(1)$} по памяти (k - размер алфавита или окна, если храним его содержимое). \sep % *** Добавлен \sep для отступа ***
-    % *** ИЗМЕНЕНИЕ 2: Добавлено замечание про хеш-таблицы ***
-    \textit{(Часто внутри окна используется \texttt{dict} или \texttt{set} для отслеживания состояния, например, частот символов.)}
-    \begin{codebox}{python}{Общая структура (динамическое окно)}
-    left = 0
-    result = ...
-    current_window_state = ... # e.g., dict, set
-
-    for right in range(len(data)):
-        # Расширяем окно вправо
-        add_element(data[right], current_window_state)
-
-        # Сжимаем окно слева, пока условие не выполнится
-        while not is_window_valid(current_window_state):
-            remove_element(data[left], current_window_state)
-            left += 1
-
-        # Обновляем результат, если нужно
-        update_result(result, current_window_state)
-
-    return result
-    \end{codebox}
-\end{textbox}
-
-\begin{textbox}{Паттерн: Хеш-таблица / Словарь (Hash Table / Dictionary)}
-    % *** ИЗМЕНЕНИЕ 3а: Усилено про скорость ***
-    \textbf{Идея:} Использование структуры данных "ключ-значение" для \textbf{сверхбыстрого} ($\approx$ $O(1)$ в среднем) поиска, добавления или проверки наличия элемента. Незаменимо, когда нужно часто проверять наличие элемента или считать частоты. В Python это `dict` и `set`. \sep
-    \textbf{Аналогия:} Гардероб с номерками. По номерку (ключу) ты мгновенно находишь свою куртку (значение). Или телефонная книга: по имени (ключу) находишь номер (значение). \sep
-    \textbf{Типовые задачи:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item \textbf{Two Sum:} Найти два числа в массиве (не обязательно отсортированном), сумма которых равна X. (Храним `value -> index` в `dict`).
-        \item Группировка анаграмм. (Ключ - отсортированная строка или кортеж частот в `dict`, значение - список строк).
-        \item Найти первый неповторяющийся символ в строке. (Храним `char -> count` в `dict`).
-        % *** ИЗМЕНЕНИЕ 3б: Уточнено про set vs dict ***
-        \item Проверить, содержит ли массив дубликаты. (Используем `set` для проверки наличия; `dict` – для хранения счетчиков или индексов).
-    \end{itemize} \sep
-    \textbf{Сложность:} В среднем \textbf{$O(1)$} для `get`, `insert`, `delete`. \textbf{$O(N)$} по времени для обхода всей таблицы. \textbf{$O(N)$} по памяти в худшем случае для хранения N элементов. Помните про возможные коллизии и $O(N)$ в худшем случае для операций, но на практике редко.
-\end{textbox}
-
-% --- Раздел 2: Базовые Алгоритмы и Структуры ---
-\section{Базовые Алгоритмы и Структуры}
-
-\begin{myblock}{Сортировки (Важна Идея и Сложность)}
-    \textbf{Идея:} Упорядочивание элементов коллекции. Редко нужно реализовывать сортировку с нуля на собеседовании (если только не попросят), но важно знать \textit{принцип работы} и \textit{сложность} эффективных алгоритмов (`Merge Sort`, `Quick Sort`). \sep
-    \textbf{Аналогия:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item \textbf{Merge Sort (Слиянием):} Разделяй и властвуй. Как сортировать большую колоду карт: раздели пополам, отсортируй каждую половину (рекурсивно), затем аккуратно слей две отсортированные стопки в одну.
-        \item \textbf{Quick Sort (Быстрая):} Выбери "опорную" карту. Все карты меньше нее положи налево, все больше - направо. Повтори для левой и правой кучек.
-    \end{itemize} \sep
-    \textbf{Когда использовать?} Часто как \textbf{предварительный шаг} для других алгоритмов (например, для "Двух указателей"). \sep
-    \textbf{Сложность:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item Merge Sort: \textbf{$O(N \log N)$} время (всегда), \textbf{$O(N)$} память (для слияния).
-        \item Quick Sort: \textbf{$O(N \log N)$} время (в среднем), \textbf{$O(N^2)$} (в худшем случае, редкий для хороших реализаций), \textbf{$O(\log N)$} память (в среднем, для стека рекурсии).
+        \item \textbf{С массивами/строками:} Подсчет частот (\texttt{Group Anagrams}, \texttt{First Unique Character}), поиск пар (\texttt{Two Sum}), проверка условий (\texttt{Longest Substring...}, \texttt{Continuous Subarray Sum}).
+        \item \textbf{С Linked Lists:} В реализации \texttt{LRU Cache}.
+        \item \textbf{С Design:} В \texttt{Insert Delete GetRandom O(1)}.
+        \item \textbf{С Геометрией:} Хранение координат (\texttt{Line Reflection}).
     \end{itemize}
-    \begin{codebox}{text}{Итог по сложности}
-    Алгоритм       | Время (среднее) | Время (худшее) | Память (доп.)
-    ---------------|-----------------|----------------|--------------
-    Merge Sort     | $O(N \log N)$   | $O(N \log N)$  | $O(N)$
-    Quick Sort     | $O(N \log N)$   | $O(N^2)$       | $O(\log N)$
-    Встроенная sort| $O(N \log N)$*  | $O(N \log N)$* | $O(N)$ или $O(\log N)$**
-    * Обычно гибридные (TimSort в Python, IntroSort в C++).
-    ** Зависит от реализации (TimSort - O(N), IntroSort - O(log N)).
-    \end{codebox} \sep % *** Добавлен \sep для отступа ***
-    % *** ИЗМЕНЕНИЕ 4: Добавлено про встроенные сортировки ***
-    \textit{(Встроенные сортировки (\texttt{sort()}, \texttt{sorted()}) в Python (TimSort) и других языках часто являются гибридными и высокооптимизированными, поэтому их почти всегда предпочтительнее использовать на практике.)}
 \end{myblock}
 
-\begin{myblock}{Связанные Списки (Linked Lists)}
-    \textbf{Идея:} Линейная структура, где каждый элемент (узел) содержит данные и \textit{указатель} на следующий элемент. Нет индексов, доступ только последовательный. \sep
-    \textbf{Аналогия:} Квест "найди сокровище". Каждая записка (узел) говорит, где искать следующую. \sep
-    \textbf{Типовые задачи:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item \textbf{Реверс списка:} Изменить указатели так, чтобы список шел в обратном порядке. (Классика: три указателя `prev`, `current`, `next`).
-        \item \textbf{Обнаружение цикла:} Определить, есть ли в списке узел, указывающий на один из предыдущих узлов. (Паттерн "Два указателя": быстрый и медленный, "Черепаха и Заяц").
-        \item Найти средний элемент. (Два указателя: один идет на 1 шаг, другой на 2).
-        \item Слияние двух отсортированных списков.
-    \end{itemize} \sep
-    \textbf{Сложность:} Зависит от задачи. Реверс - \textbf{$O(N)$} время, \textbf{$O(1)$} память. Обнаружение цикла - \textbf{$O(N)$} время, \textbf{$O(1)$} память. Доступ к k-му элементу - \textbf{$O(k)$} время. Вставка/удаление в начале - \textbf{$O(1)$}. \sep % *** Добавлен \sep для отступа ***
-    % *** ИЗМЕНЕНИЕ 5: Добавлен трейд-офф с массивами ***
-    \textit{(Ключевой трейд-офф с массивами: быстрая $O(1)$ вставка/удаление \textbf{по известному узлу} (в начале/конце или если есть указатель), но медленный $O(N)$ доступ к элементу по индексу.)}
-    \begin{codebox}{python}{Обнаружение цикла (Черепаха и Заяц)}
-    slow = head
-    fast = head
-    while fast is not None and fast.next is not None:
-        slow = slow.next
-        fast = fast.next.next
-        if slow == fast:
-            return True # Цикл найден
-    return False # Цикла нет
-    \end{codebox}
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Подсчет частоты / Проверка уникальности}
+def count_frequency(items):
+    counts = {} # или collections.defaultdict(int)
+    for item in items:
+        counts[item] = counts.get(item, 0) + 1
+    return counts
+# Пример использования set для проверки уникальности
+seen = set()
+for item in items:
+    if item in seen:
+        print(f"Duplicate found: {item}")
+    seen.add(item)
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время (среднее)}
+    $O(1)$ для \texttt{add}, \texttt{remove}, \texttt{get}, \texttt{in}. Достигается за счет хеш-функции.
+\end{myblock}
+\begin{myblock}{Время (худшее)}
+    $O(N)$ при коллизиях (редко с хорошими реализациями).
+\end{myblock}
+\begin{myblock}{Память}
+    $O(K)$, где K - количество хранимых уникальных ключей (или пар ключ-значение).
 \end{myblock}
 
-% --- Раздел 3: Деревья и Рекурсия/ДП ---
-\section{Деревья и Рекурсия/ДП}
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Easy:} \texttt{Two Sum} (*), \texttt{Jewels and Stones}, \texttt{Intersection of Two Arrays II}, \texttt{First Unique Character in a String}, \texttt{Missing Number} \sep
+    \textbf{Medium:} \texttt{Group Anagrams} (*), \texttt{Subarray Sum Equals K} (*), \texttt{Insert Delete GetRandom O(1)} (*), \texttt{Longest Substring Without Repeating Characters} (*), \texttt{Continuous Subarray Sum}, \texttt{Line Reflection} (*)
+\end{myblock}
 
-\begin{textbox}{Деревья: Обходы BFS и DFS}
-    \textbf{Идея:} Иерархическая структура данных. Обходы - способ посетить все узлы.
+% ================================================
+% Секция 2: Two Pointers / Скользящее Окно (Sliding Window)
+% ================================================
+\section{Two Pointers / Скользящее Окно (Sliding Window)}
+
+\subsection{Суть Техники}
+\begin{myblock}{Академическое Описание}
+    Техника использования двух (иногда больше) указателей, которые итерируются по структуре данных (массив, строка). Указатели могут двигаться навстречу, в одном направлении, или определять границы "окна".
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Два "пальца", скользящие по данным. Идут навстречу (часто в отсортированных данных) или в одном направлении, определяя "окно".
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Работа с \emph{отсортированными} массивами. Поиск \emph{подмассивов/подстрок} с свойствами (макс/мин, уникальность). \emph{Последовательные} элементы, \emph{диапазоны}. Проверка \emph{палиндромов}. \emph{In-place} модификации. \newline
+    Ключевые слова: "sorted array", "subarray", "substring", "consecutive", "palindrome", "window", "longest", "shortest", "at most K distinct", "in-place".
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
     \begin{itemize}[nosep, leftmargin=*]
-        \item \textbf{BFS (Поиск в ширину / Breadth-First Search):} Исследование "уровень за уровнем". Использует \textbf{очередь (Queue)}.
-        \item \textbf{DFS (Поиск в глубину / Depth-First Search):} Исследование "вглубь до упора, затем возврат". Использует \textbf{рекурсию} (неявный стек) или \textbf{явный стек (Stack)} для итеративной реализации. Варианты DFS: pre-order, in-order, post-order.
-    \end{itemize} \sep
-    \textbf{Аналогия:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item BFS: Бросить камень в воду - волны расходятся по уровням. Или: поиск кратчайшего пути в лабиринте без весов - исследуем все соседние клетки, потом соседей соседей и т.д.
-        \item DFS: Исследование лабиринта - идем по одному пути до тупика, возвращаемся, пробуем другой.
-    \end{itemize} \sep
-    \textbf{Типовые задачи:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item Поуровневый обход дерева (Level Order Traversal) - Классический BFS.
-        \item Найти максимальную глубину дерева - DFS (рекурсивно или итеративно).
-        \item Проверить, является ли дерево бинарным деревом поиска (BST) - DFS (in-order обход).
-        \item Найти путь от корня к узлу с заданной суммой - DFS.
-    \end{itemize} \sep
-    \textbf{Сложность:} \textbf{$O(N)$} по времени (N - число узлов, посещаем каждый). \textbf{$O(W)$} по памяти для BFS (W - макс. ширина дерева, в худшем случае $N/2$). \textbf{$O(H)$} по памяти для DFS (H - высота дерева, для стека рекурсии/итерации, в худшем случае N). \sep % *** Добавлен \sep для отступа ***
-    % *** ИЗМЕНЕНИЕ 6: Добавлен раздел "Когда использовать?" ***
-    \textbf{Когда использовать?}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item \textbf{BFS:} Поиск кратчайшего пути в \textit{невзвешенном} графе/дереве, поуровневый обход, задачи "ближайший сосед".
-        \item \textbf{DFS:} Проверка связности, поиск цикла, поиск пути (не обязательно кратчайшего), задачи, требующие исследования ветки до конца (например, проверка валидности BST), многие задачи на бэктрекинг. Часто проще реализовать рекурсивно.
+        \item \textbf{С HashTable/Set:} В Sliding Window для отслеживания элементов окна (\texttt{Longest Substring...}, \texttt{Permutation in String}).
+        \item \textbf{С Сортировкой:} Предварительный шаг для Two Pointers (\texttt{Two Sum II}).
+        \item \textbf{С Linked Lists:} В задачах типа \texttt{Remove Nth Node From End of List}.
     \end{itemize}
-    \begin{codebox}{python}{Структура BFS (итеративно)}
-    from collections import deque
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Two Pointers / Sliding Window}
+# Two Pointers (с двух концов отсорт. массива)
+def find_pair_sum(arr, target):
+    left, right = 0, len(arr) - 1
+    while left < right:
+        current_sum = arr[left] + arr[right]
+        if current_sum == target: return (left, right)
+        elif current_sum < target: left += 1
+        else: right -= 1
+    return None
+# Sliding Window (макс. сумма окна размера k)
+def max_subarray_sum(arr, k):
+    max_sum = float('-inf')
+    current_sum = 0
+    window_start = 0
+    for window_end in range(len(arr)):
+        current_sum += arr[window_end]
+        if window_end >= k - 1:
+            max_sum = max(max_sum, current_sum)
+            current_sum -= arr[window_start]
+            window_start += 1
+    return max_sum
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время}
+    Обычно $O(N)$. Каждый указатель проходит массив не более раза.
+\end{myblock}
+\begin{myblock}{Память}
+    Часто $O(1)$ (in-place). Может быть $O(K)$ для Sliding Window с хранением состояния окна (K - размер алфавита/уникальных элементов).
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Easy:} \texttt{Valid Palindrome} (*), \texttt{Move Zeroes} (*), \texttt{Merge Sorted Array}, \texttt{Is Subsequence}, \texttt{Squares of a Sorted Array}, \texttt{Remove Duplicates from Sorted Array}, \texttt{Two Sum II – Input Array Is Sorted}, \texttt{Reverse Words in a String III} \sep
+    \textbf{Medium:} \texttt{Longest Subarray of 1’s After Deleting One Element} (*), \texttt{One Edit Distance} (*), \texttt{Permutation in String} (*), \texttt{Max Consecutive Ones II} (*), \texttt{Maximize Distance to Closest Person} (*), \texttt{Find All Anagrams in a String} (*), \texttt{Interval List Intersections}, \texttt{Max Consecutive Ones III}, \texttt{Longest Palindromic Substring} (Expand Around Center), \texttt{Longest Substring with At Most Two Distinct Characters} (*), \texttt{Partition Labels} (*), \texttt{Product of Array Except Self} (*), \texttt{Remove Nth Node From End of List} (*) \sep
+    \textbf{Hard:} \texttt{Trapping Rain Water} (*) (Оптимальное O(N))
+\end{myblock}
+
+% ================================================
+% Секция 3: Linked Lists / Связанные Списки
+% ================================================
+\section{Linked Lists / Связанные Списки}
+
+\subsection{Суть Структуры Данных}
+\begin{myblock}{Академическое Описание}
+    Линейная структура: узлы хранят данные и ссылку \texttt{next}. В двусвязных - и ссылку \texttt{prev}. Доступ по индексу $O(N)$, вставка/удаление при известном узле $O(1)$.
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Цепочка вагонов, каждый знает следующий. Легко вставить/расцепить, если стоишь у нужного вагона, но долго идти до 5-го вагона.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Явное упоминание "Linked List", "Node", "next". Задачи на \emph{реверс}, \emph{циклы}, \emph{слияние}, \emph{удаление} узлов.
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С Two Pointers:} Поиск середины, N-го с конца (\texttt{Remove Nth Node...}), палиндром (\texttt{Palindrome Linked List}), цикл.
+        \item \textbf{С HashTable:} В \texttt{LRU Cache}.
+        \item \textbf{С Рекурсией:} Реверс, слияние, обход.
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Обход / Реверс Списка}
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+def traverse_list(head):
+    current = head
+    while current:
+        print(current.val)
+        current = current.next
+# Идея реверса (итеративно)
+def reverse_list(head):
+    prev = None
+    current = head
+    while current:
+        next_node = current.next
+        current.next = prev
+        prev = current
+        current = next_node
+    return prev
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время}
+    $O(N)$ для поиска/доступа по индексу/обхода. $O(1)$ для вставки/удаления в начале или при известном узле.
+\end{myblock}
+\begin{myblock}{Память}
+    $O(N)$ для хранения узлов. Рекурсия может добавить $O(N)$ на стек. Итерация часто $O(1)$ доп. памяти.
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Easy:} \texttt{Reverse Linked List} (*), \texttt{Merge Two Sorted Lists}, \texttt{Palindrome Linked List} \sep
+    \textbf{Medium:} \texttt{Add Two Numbers}, \texttt{Remove Nth Node From End of List} (*), \texttt{LRU Cache} (*)
+\end{myblock}
+
+% ================================================
+% Секция 4: Stack / Стек
+% ================================================
+\section{Stack / Стек}
+
+\subsection{Суть Структуры Данных}
+\begin{myblock}{Академическое Описание}
+    Линейная структура данных, работающая по принципу LIFO (Last-In, First-Out). Операции: \texttt{push} (добавить), \texttt{pop} (удалить сверху).
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Стопка книг: кладешь и берешь сверху. Последняя положенная берется первой.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Обработка в \emph{обратном порядке}. Проверка \emph{сбалансированности} (\texttt{()[]\{\}}). Вычисление \emph{RPN}. Итеративный \emph{DFS}. \emph{Отмена} действия (\emph{backtracking}). Поиск \emph{след. большего/меньшего}. \newline
+    Ключевые слова: "parentheses", "balanced", "RPN", "backtrack", "next greater element", "simplify path".
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С Массивами/Строками:} Обработка символов/чисел (\texttt{Valid Parentheses}, \texttt{Eval RPN}).
+        \item \textbf{С Design:} Реализация очередей/стеков (\texttt{Implement Queue...}, \texttt{Max Stack}).
+        \item \textbf{С Итераторами:} В \texttt{Flatten Nested List Iterator}.
+        \item \textbf{С DP/Greedy:} Оптимизация (гистограммы в \texttt{Maximal Rectangle}).
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Проверка Сбалансированности Скобок}
+def is_valid_parentheses(s):
+    stack = []
+    mapping = {")": "(", "}": "{", "]": "["}
+    for char in s:
+        if char in mapping.values():
+            stack.append(char)
+        elif char in mapping.keys():
+            if not stack or mapping[char] != stack.pop():
+                return False
+    return not stack
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время}
+    $O(1)$ для \texttt{push}, \texttt{pop}, \texttt{peek}. Общее время алгоритма часто $O(N)$.
+\end{myblock}
+\begin{myblock}{Память}
+    $O(N)$ в худшем случае (все элементы в стеке).
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Easy:} \texttt{Valid Parentheses} (*), \texttt{Implement Queue using Stacks}, \texttt{Max Stack} (*) \sep
+    \textbf{Medium:} \texttt{Evaluate Reverse Polish Notation}, \texttt{Simplify Path}, \texttt{Flatten Nested List Iterator} (*) \sep
+    \textbf{Hard:} \texttt{Maximal Rectangle} (*)
+\end{myblock}
+
+% ================================================
+% Секция 5: Trees / Деревья (BST, Binary Tree)
+% ================================================
+\section{Trees / Деревья (BST, Binary Tree)}
+
+\subsection{Суть Структуры Данных}
+\begin{myblock}{Академическое Описание}
+    Иерархическая структура (узлы, ребра). Бинарное дерево: <= 2 детей. BST: левое < узел < правое. Обходы: BFS (по уровням), DFS (вглубь).
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Семейное древо / структура папок. BST - отсортированный справочник (налево - меньше, направо - больше).
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Иерархия. Упоминание "Tree", "Node", "BST". \emph{Обход} (BFS, DFS). \emph{Поиск пути}. \emph{LCA}. \emph{Валидация} (BST, симметрия). \emph{Макс. глубина/сумма пути}.
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С Рекурсией:} DFS и многие задачи (\texttt{Validate BST}, \texttt{LCA}, \texttt{Max Path Sum}).
+        \item \textbf{С Очередью (Queue):} Для BFS.
+        \item \textbf{С Стеком (Stack):} Для итеративного DFS.
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{DFS (In-order) / BFS (Level-order)}
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val; self.left = left; self.right = right
+# DFS (In-order - рекурсивный)
+def inorder_traversal(root):
+    res = []; dfs(root, res); return res
+def dfs(node, res):
+    if not node: return
+    dfs(node.left, res); res.append(node.val); dfs(node.right, res)
+# BFS (Level-order - итеративный)
+from collections import deque
+def level_order(root):
     if not root: return []
-    queue = deque([root])
-    result = []
-    while queue:
-        level_size = len(queue)
-        current_level = []
-        for _ in range(level_size):
-            node = queue.popleft()
-            current_level.append(node.val)
-            if node.left: queue.append(node.left)
-            if node.right: queue.append(node.right)
-        result.append(current_level) # или другая обработка
-    return result
-    \end{codebox}
-    \begin{codebox}{python}{Структура DFS (рекурсивно, pre-order)}
-    result = []
-    def dfs(node):
-        if not node: return
-        result.append(node.val) # Pre-order: Visit node first
-        dfs(node.left)
-        dfs(node.right)
-        # In-order: dfs(left), visit, dfs(right)
-        # Post-order: dfs(left), dfs(right), visit
-    dfs(root)
-    return result
-    \end{codebox}
-\end{textbox}
+    res, q = [], deque([root])
+    while q:
+        level = []
+        # Используем \_ для экранирования в LaTeX
+        for \_ in range(len(q)):
+            node = q.popleft()
+            level.append(node.val)
+            if node.left: q.append(node.left)
+            if node.right: q.append(node.right)
+        res.append(level)
+    return res
+\end{codebox}
 
-% Используем упрощенный заголовок из предыдущего шага
-\begin{alerttextbox}{Рекурсия / Бэктрекинг / ДП}
-    Эти концепции тесно связаны и часто используются вместе, особенно в задачах на деревьях, графах и комбинаторике. \sep
-    \textbf{Рекурсия:}
-    \begin{itemize}[nosep, leftmargin=*]
-        \item \textbf{Идея:} Функция вызывает саму себя для решения подзадачи меньшего размера. Обязательны \textit{базовый случай} (условие остановки) и \textit{рекурсивный шаг}.
-        \item \textbf{Аналогия:} Матрешка. Чтобы открыть самую маленькую, нужно открыть все большие над ней.
-        \item \textbf{Примеры:} Обходы деревьев (DFS), вычисление факториала.
-    \end{itemize} \sep
-    \textbf{Бэктрекинг (Backtracking):}
-    \begin{itemize}[nosep, leftmargin=*]
-        % *** ИЗМЕНЕНИЕ 7а: Уточнена связь рекурсии и бэктрекинга ***
-        \item \textbf{Идея:} Систематический перебор всех возможных кандидатов в решении. Строим решение по шагам. Если текущий шаг ведет в тупик (не может привести к решению), "откатываемся" (backtrack) и пробуем другой вариант. Часто реализуется через \textbf{рекурсивный DFS}, где на каждом шаге пробуются варианты, и происходит 'откат' при неудаче.
-        \item \textbf{Аналогия:} Поиск выхода из лабиринта: идешь по пути, если тупик - возвращаешься к развилке и пробуешь другой путь.
-        \item \textbf{Примеры:} Генерация всех перестановок/комбинаций/подмножеств, решение Судоку, задача N ферзей.
-    \end{itemize} \sep
-    \textbf{Динамическое Программирование (ДП / DP):}
-    \begin{itemize}[nosep, leftmargin=*]
-        % *** ИЗМЕНЕНИЕ 7б: Уточнена связь рекурсии и ДП ***
-        \item \textbf{Идея:} Решение задачи путем разбиения ее на \textit{перекрывающиеся подзадачи} и решения каждой подзадачи только один раз, сохраняя ее результат (мемоизация или табуляция) для будущего использования. Требует наличия \textit{оптимальной подструктуры}. Ключевое отличие от 'наивной' рекурсии — эффективная обработка \textbf{перекрывающихся подзадач} за счет сохранения их решений.
-        \item \textbf{Аналогия:} Строительство из Lego. Чтобы построить большой замок (решить задачу), ты сначала строишь башни и стены (решаешь подзадачи). Если тебе снова нужна точно такая же башня, ты берешь уже готовую (сохраненный результат), а не строишь заново.
-        \item \textbf{Примеры:} Числа Фибоначчи, задача о рюкзаке, поиск самой длинной общей подпоследовательности, "Лесенка" (Climbing Stairs).
-        \item \textbf{Подходы:}
-            \begin{itemize}
-                \item \textit{Мемоизация (Top-Down):} Рекурсивное решение + кеширование результатов (обычно через словарь/массив).
-                \item \textit{Табуляция (Bottom-Up):} Итеративное заполнение таблицы (массива) результатами подзадач, начиная с самых маленьких.
-            \end{itemize}
-    \end{itemize} \sep
-    \textbf{Сложность:} Сильно зависит от задачи. Может быть от полиномиальной (ДП на Фибоначчи - $O(N)$) до экспоненциальной (бэктрекинг для перестановок - $O(N!)$).
-    \begin{codebox}{python}{Пример ДП (Фибоначчи с мемоизацией)}
-    memo = {}
-    def fib(n):
-        if n in memo: return memo[n]
-        if n <= 1: return n
-        result = fib(n-1) + fib(n-2)
-        memo[n] = result
-        return result
-    \end{codebox}
-\end{alerttextbox}
+\subsection{Анализ Сложности}
+\begin{myblock}{Время {(N узлов, H высота)}}
+    $O(N)$ для обходов. В сбалансированном BST поиск/вставка/удаление $O(H) = O(\log N)$. В несбалансированном $O(N)$.
+\end{myblock}
+\begin{myblock}{Память {(N узлов, H высота, W макс. ширина)}}
+    $O(N)$ для хранения дерева. BFS $O(W)$ (до $O(N)$). DFS (рекурсия) $O(H)$ (до $O(N)$). DFS (итерация) $O(H)$.
+\end{myblock}
 
-% --- Конец контента ---
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Easy:} \texttt{Symmetric Tree} (*), \texttt{Range Sum of BST} \sep
+    \textbf{Medium:} \texttt{Validate Binary Search Tree} (*), \texttt{Lowest Common Ancestor of a Binary Tree} (*), \texttt{Lowest Common Ancestor of a Binary Tree III} (*) \sep
+    \textbf{Hard:} \texttt{Binary Tree Maximum Path Sum} (*)
+\end{myblock}
+
+% ================================================
+% Секция 6: Heap / Priority Queue / Куча
+% ================================================
+\section{Heap / Priority Queue / Куча}
+
+\subsection{Суть Структуры Данных}
+\begin{myblock}{Академическое Описание}
+    Древовидная структура (бинарная куча) со свойством кучи: min-heap (узел <= потомки), max-heap (узел >= потомки).
+\end{myblock}
+\begin{myblock}{Операции}
+    Эффективное добавление ($O(\log N)$) и извлечение min/max ($O(\log N)$). Просмотр min/max $O(1)$. Priority Queue часто реализуется кучей.
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    "Умная" очередь, всегда держит самый "важный" (min/max) элемент сверху. Быстро добавить или забрать самый важный.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Постоянный доступ к \emph{наименьшему/наибольшему}. "Найти \emph{K-ый}" или "топ \emph{K}". \emph{Слияние K} списков. Задачи с \emph{приоритетами}. \newline
+    Ключевые слова: "top K", "smallest/largest", "K-th element", "median" (иногда), "priority", "merge K sorted lists", "meeting rooms II".
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С Сортировкой:} В задачах на интервалы (\texttt{Meeting Rooms II}).
+        \item \textbf{С Массивами/Списками:} Загрузка данных, слияние (\texttt{Merge k Sorted Lists}).
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Min-Heap / Поиск K наибольших}
+import heapq
+# Min-Heap операции
+min_heap = []
+heapq.heappush(min_heap, 5)
+heapq.heappush(min_heap, 1)
+smallest = heapq.heappop(min_heap) # 1
+# Найти K наибольших (min-heap размера K)
+def find_k_largest(nums, k):
+    min_heap = []
+    for num in nums:
+        if len(min_heap) < k:
+            heapq.heappush(min_heap, num)
+        elif num > min_heap[0]:
+            heapq.heapreplace(min_heap, num)
+    return list(min_heap)
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время (N элементов)}
+    Вставка (\texttt{push}) $O(\log N)$. Извлечение (\texttt{pop}) $O(\log N)$. Просмотр (\texttt{heap[0]}) $O(1)$. Построение (\texttt{heapify}) $O(N)$.
+\end{myblock}
+\begin{myblock}{Память}
+    $O(N)$ для хранения всех элементов. $O(K)$ если храним только K элементов.
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Medium:} \texttt{Meeting Rooms II} (*) \sep
+    \textbf{Hard:} \texttt{Merge k Sorted Lists} (*)
+\end{myblock}
+
+% ================================================
+% Секция 7: Binary Search / Бинарный Поиск
+% ================================================
+\section{Binary Search / Бинарный Поиск}
+
+\subsection{Суть Алгоритма}
+\begin{myblock}{Академическое Описание}
+    Алгоритм эффективного поиска элемента в \emph{отсортированном} массиве (или другой упорядоченной структуре). Работает путем многократного деления интервала поиска пополам.
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Игра "угадай число" в отсортированном списке. На каждой попытке отбрасываешь половину оставшихся вариантов.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Дан \emph{отсортированный} массив. Поиск элемента, \emph{границы}, первой/последней позиции. Поиск в \emph{повернутом (rotated)} отсортированном массиве. Задача сводится к поиску ответа \texttt{x} в монотонном пространстве решений (существует \texttt{check(x)}, монотонно меняющая T/F) - можно бинарно искать границу. \newline
+    Ключевые слова: "sorted array", "find element", "search", "rotated array", "minimum/maximum in rotated", "median of sorted arrays".
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С Массивами:} Поиск в отсортированных/повернутых массивах (\texttt{Search in Rotated...}, \texttt{Find Minimum...}, \texttt{Median...}).
+        \item \textbf{С Сортировкой:} Часто требует предварительной сортировки.
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Классический Бинарный Поиск}
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = left + (right - left) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время}
+    $O(\log N)$. На каждом шаге пространство поиска уменьшается вдвое.
+\end{myblock}
+\begin{myblock}{Память}
+    $O(1)$ для итеративной реализации. $O(\log N)$ для рекурсивной (стек вызовов).
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Medium:} \texttt{Search in Rotated Sorted Array} (*), \texttt{Find Minimum in Rotated Sorted Array} (*) \sep
+    \textbf{Hard:} \texttt{Median of Two Sorted Arrays} (*)
+\end{myblock}
+
+% ================================================
+% Секция 8: Graph / Графы (BFS/DFS)
+% ================================================
+\section{Graph / Графы (BFS/DFS)}
+
+\subsection{Суть Структуры Данных и Обходов}
+\begin{myblock}{Академическое Описание}
+    Структура из вершин (nodes) и ребер (edges). Обход в ширину (BFS) исследует граф по уровням. Обход в глубину (DFS) идет вглубь по ветке до упора, затем возвращается.
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Карта дорог (граф): города - вершины, дороги - ребра. BFS - волны на воде: исследуем сначала ближайших. DFS - блуждание по лабиринту: идем до тупика, возвращаемся.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Задачи на \emph{связи}. Поиск \emph{пути}. \emph{Кратчайший путь} в \emph{невзвешенном} графе (BFS). Обход \emph{матрицы/сетки}. \emph{Циклы}. \emph{Связанные компоненты}. Топологическая сортировка (DFS). \newline
+    Ключевые слова: "graph", "grid", "matrix", "connected", "path", "shortest path (unweighted)", "cycle", "neighbors", "dependencies", "islands".
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С Матрицами:} Граф часто представлен сеткой (\texttt{Number of Islands}).
+        \item \textbf{С Очередью (Queue):} Для BFS.
+        \item \textbf{С Стеком (Stack) / Рекурсией:} Для DFS.
+        \item \textbf{С Множествами (Set):} Для отслеживания посещенных вершин.
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{BFS / DFS на Графе (представлен dict)}
+from collections import deque
+# BFS (поиск пути)
+def bfs(graph, start, target):
+    q = deque([(start, [start])]); visited = {start}
+    while q:
+        (v, path) = q.popleft()
+        for neighbor in graph.get(v, []):
+            if neighbor == target: return path + [neighbor]
+            if neighbor not in visited:
+                visited.add(neighbor)
+                q.append((neighbor, path + [neighbor]))
+    return None
+# DFS (рекурсивный обход)
+def dfs(graph, node, visited):
+    visited.add(node); print(node) # Обработка
+    for neighbor in graph.get(node, []):
+        if neighbor not in visited:
+            dfs(graph, neighbor, visited)
+# visited_set = set(); dfs(my_graph, start_node, visited_set)
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время {(V вершин, E ребер)}}
+    $O(V + E)$. Посещаем каждую вершину и ребро константное число раз.
+\end{myblock}
+\begin{myblock}{Память {(V вершин)}}
+    $O(V)$ в худшем случае. Для BFS/DFS нужна очередь/стек и \texttt{visited}, хранящие до $O(V)$ элементов.
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Medium:} \texttt{Number of Islands} (*) (BFS/DFS на сетке), \texttt{Perfect Squares} (BFS на графе состояний)
+\end{myblock}
+
+% ================================================
+% Секция 9: Design / Проектирование Систем
+% ================================================
+\section{Design / Проектирование Систем}
+
+\subsection{Суть Задач}
+\begin{myblock}{Академическое Описание}
+    Задачи, требующие спроектировать и реализовать класс/структуру данных с определенным API и ограничениями по сложности операций. Часто - комбинация стандартных структур.
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Собрать механизм (кэш, итератор) из стандартных "деталей" (словари, списки) так, чтобы он работал быстро ($O(1)$ или $O(\log N)$).
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Прямая постановка: "Design...", "Implement...". Требования к \emph{сложности операций} (особенно $O(1)$). Реализация \emph{итераторов}, \emph{кэшей}, \emph{счетчиков}.
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    Почти всегда комбинация других паттернов:
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С HashTable:} Для $O(1)$ доступа/поиска (\texttt{LRU Cache}, \texttt{InsertDeleteGetRandom}).
+        \item \textbf{С Linked Lists:} Для $O(1)$ вставки/удаления/порядка (\texttt{LRU Cache}).
+        \item \textbf{С Массивами:} Хранение, $O(1)$ доступ по индексу (\texttt{InsertDeleteGetRandom}).
+        \item \textbf{С Стеком/Очередью:} Итераторы, счетчики, спец. стеки.
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Пример: LRU Cache (Идея с OrderedDict)}
+from collections import OrderedDict
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cache = OrderedDict(); self.capacity = capacity
+    def get(self, key: int) -> int:
+        if key not in self.cache: return -1
+        self.cache.move_to_end(key); return self.cache[key]
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            self.cache[key] = value; self.cache.move_to_end(key)
+        else:
+            if len(self.cache) >= self.capacity:
+                self.cache.popitem(last=False)
+            self.cache[key] = value
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Временная и Пространственная Сложность}
+    Анализируется для каждой операции (\texttt{get}, \texttt{put}, etc.) отдельно. Цель — удовлетворить ограничениям. Определяется сложностью базовых структур.
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Easy:} \texttt{Number of Recent Calls} (*), \texttt{Max Stack} (*) \sep
+    \textbf{Medium:} \texttt{Zigzag Iterator} (*), \texttt{Insert Delete GetRandom O(1)} (*), \texttt{LRU Cache} (*), \texttt{Design Hit Counter} (*), \texttt{Flatten Nested List Iterator} (*)
+\end{myblock}
+
+% ================================================
+% Секция 10: Recursion / Backtracking / Динамическое Программирование (DP)
+% ================================================
+\section{Recursion / Backtracking / DP}
+
+\subsection{Суть Подходов}
+\begin{myblock}{Рекурсия}
+    Функция вызывает сама себя для решения подзадачи меньшего размера. Требует базового случая.
+\end{myblock}
+\begin{myblock}{Backtracking}
+    Систематический перебор кандидатов. Строит решение пошагово; если шаг неудачен, "откатывается" (backtracks).
+\end{myblock}
+\begin{myblock}{Динамическое Программирование (DP)}
+    Решение через разбиение на \emph{перекрывающиеся подзадачи}. Решения подзадач сохраняются (мемоизация или табуляция).
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогии}
+    \textbf{Рекурсия:} Матрешка. \sep
+    \textbf{Backtracking:} Идти по лабиринту. \sep
+    \textbf{DP:} Строить из Lego, повторно используя мелкие блоки.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы: Рекурсия/Backtracking}
+    Структура задачи рекурсивна (деревья). Генерация \emph{всех} перестановок, комбинаций, подмножеств. Поиск \emph{всех} путей. Головоломки. \newline
+    Ключевые слова: "generate all", "find all combinations/permutations/subsets".
+\end{myblock}
+\begin{myblock}{Сигналы: Динамическое Программирование}
+    Найти \emph{оптимальное} (min/max, longest/shortest). Подсчитать \emph{количество способов}. Задача разбивается на \emph{пересекающиеся} подзадачи. \newline
+    Ключевые слова: "minimum/maximum cost/path/value", "longest/shortest", "number of ways".
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С Деревьями:} Рекурсия - основной способ обхода (\texttt{Max Path Sum}).
+        \item \textbf{С Массивами/Строками:} DP для последовательностей. Backtracking для комбинаций.
+        \item \textbf{С Стеком:} Итеративный Backtracking.
+        \item \textbf{С HashTable/Массивом:} Мемоизация в DP.
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Рекурсия / Backtracking / DP (Мемоизация)}
+# Рекурсия (Факториал)
+def factorial(n):
+    if n == 0: return 1; return n * factorial(n - 1)
+# Backtracking (Подмножества)
+def generate_subsets(nums):
+    res, subset = [], []
+    def backtrack(start):
+        res.append(subset[:])
+        for i in range(start, len(nums)):
+            subset.append(nums[i]); backtrack(i + 1); subset.pop()
+    backtrack(0); return res
+# DP (Фибоначчи с мемоизацией)
+memo = {}
+def fib(n):
+    if n in memo: return memo[n]
+    if n <= 1: return n
+    memo[n] = fib(n - 1) + fib(n - 2); return memo[n]
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время: Рекурсия/Backtracking}
+    Часто экспоненциальное $O(c^N)$ или факториальное $O(N!)$. Зависит от ветвления и глубины.
+\end{myblock}
+\begin{myblock}{Время: DP}
+    Обычно полиномиальное ($O(N)$, $O(N^2)$, $O(N \cdot M)$). (Кол-во подзадач) * (Время решения одной).
+\end{myblock}
+\begin{myblock}{Память: Рекурсия/Backtracking}
+    $O(H)$, где H - макс. глубина рекурсии (часто $O(N)$ для стека вызовов).
+\end{myblock}
+\begin{myblock}{Память: DP}
+    $O(S)$, где S - кол-во состояний (размер таблицы/мемо, часто $O(N)$ или $O(N \cdot M)$).
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Medium:} \texttt{Generate Parentheses} (*) (Backtracking), \texttt{Perfect Squares} (DP или BFS) \sep
+    \textbf{Hard:} \texttt{Binary Tree Maximum Path Sum} (*) (Рекурсия), \texttt{Maximal Rectangle} (*) (DP)
+\end{myblock}
+
+% ================================================
+% Секция 11: Math / Geometry / Bit Manipulation / Other
+% ================================================
+\section{Math / Geometry / Bit Manipulation / Other}
+
+\subsection{Суть Категории}
+\begin{myblock}{Академическое Описание}
+    Задачи, решение которых опирается на математические теоремы, формулы, геометрию, побитовые операции или специфические трюки, не укладывающиеся в стандартные паттерны.
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Иногда нужна школьная математика, геометрия или хитрые трюки с числами/битами.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Работа с \emph{координатами}, точками, линиями. \emph{Делимость}, простые числа. Манипуляции с \emph{битами}. \emph{Вероятность}. Прямая \emph{симуляция}. \emph{Сжатие строк}. \newline
+    Ключевые слова: "coordinates", "geometry", "prime", "bits", "random", "probability", "simulate", "compress".
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{С HashTable:} Хранение геом. объектов/промежут. результатов (\texttt{Line Reflection}).
+        \item \textbf{С Массивами/Строками:} Основа для мат. манипуляций/симуляций (\texttt{String Compression}).
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Проверка на степень двойки / Rand10() Идея}
+# Проверка на степень двойки (битовая магия)
+def is_power_of_two(n):
+    return n > 0 and (n & (n - 1) == 0)
+# Идея генерации Rand10 из Rand7 (Rejection Sampling)
+# def rand10():
+#     while True:
+#         num = (rand7() - 1) * 7 + rand7() # 1..49
+#         if num <= 40: return (num - 1) % 10 + 1
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Временная и Пространственная Сложность}
+    Сильно варьируется: от $O(1)$, $O(\log N)$ (мат./бит.) до $O(N)$, $O(N^2)$ (симуляции, геометрия). Анализируется индивидуально.
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Easy:} \texttt{Summary Ranges} (*), \texttt{Consecutive Characters}, \texttt{Add Strings} \sep
+    \textbf{Medium:} \texttt{Line Reflection} (*), \texttt{String Compression} (*), \texttt{Implement Rand10() Using Rand7()} (*)
+\end{myblock}
+
+% ================================================
+% Секция 12: Sorting / Сортировка
+% ================================================
+\section{Sorting / Сортировка}
+
+\subsection{Суть Процесса}
+\begin{myblock}{Академическое Описание}
+    Процесс упорядочивания элементов коллекции. Часто - \textbf{предварительный шаг} для других алгоритмов. Эффективные алгоритмы сравнения: $O(N \log N)$.
+\end{myblock}
+
+\subsection{Простое Объяснение}
+\begin{myblock}{Аналогия}
+    Привести данные в порядок (как слова в словаре), чтобы легче работать дальше.
+\end{myblock}
+
+\subsection{Распознавание Паттерна}
+\begin{myblock}{Сигналы и Ключевые Слова}
+    Явно требуется \emph{отсортированный} вывод. Применение алгоритма для \emph{отсортированных} данных (Binary Search, Two Pointers). Задачи с \emph{интервалами} (слияние, пересечения). \emph{Анаграммы} (сортировка строк).
+\end{myblock}
+
+\subsection{Частые Комбинации}
+\begin{myblock}{Комбинации с Другими Паттернами (в вашем списке)}
+    Является \textbf{предварительным шагом} для:
+    \begin{itemize}[nosep, leftmargin=*]
+        \item \textbf{Two Pointers:} Поиск пар, обработка.
+        \item \textbf{Binary Search:} Обязательное условие.
+        \item \textbf{Heap:} Иногда используется вместе (\texttt{Meeting Rooms II}).
+        \item \textbf{Greedy:} Часто требует сортировки (\texttt{Merge Intervals}).
+    \end{itemize}
+\end{myblock}
+
+\subsection{Пример Python Сниппета}
+\begin{codebox}{python}{Встроенная Сортировка / Сортировка по Ключу}
+# Сортировка на месте
+my_list = [3, 1, 4, 1, 5, 9, 2, 6]
+my_list.sort() # -> [1, 1, 2, 3, 4, 5, 6, 9]
+# Создание нового отсортированного списка
+my_tuple = (3, 1, 4, 1, 5)
+sorted_list = sorted(my_tuple) # -> [1, 1, 3, 4, 5]
+# Сортировка по ключу (по второму элементу)
+data = [(1, 5), (3, 2), (2, 8)]
+data.sort(key=lambda x: x[1]) # -> [(3, 2), (1, 5), (2, 8)]
+\end{codebox}
+
+\subsection{Анализ Сложности}
+\begin{myblock}{Время}
+    $O(N \log N)$ для эффективных алгоритмов сравнения (Merge Sort, Heap Sort, Quick Sort avg, Timsort). Counting/Radix Sort могут быть $O(N)$ при ограничениях.
+\end{myblock}
+\begin{myblock}{Память}
+    $O(1)$ (in-place Heap Sort) до $O(N)$ (Merge Sort, Timsort). \texttt{sort()} стремится к O(N) в худшем, \texttt{sorted()} всегда $O(N)$ доп. памяти.
+\end{myblock}
+
+\subsection{Задачи из Списка}
+\begin{myblock}{Примеры Задач LeetCode}
+    \textbf{Medium:} \texttt{Merge Intervals} (*) (как первый шаг), \texttt{Meeting Rooms II} (*) (как первый шаг)
+\end{myblock}
+
+% --- End of Document ---
